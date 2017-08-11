@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace Editor.Serializers
+namespace Convenient.Stuff.Serializers
 {
     public static class Json
     {
@@ -19,6 +19,11 @@ namespace Editor.Serializers
         private static void Suppress(object sender, ErrorEventArgs e)
         {
             e.ErrorContext.Handled = true;
+        }
+
+        public static T Deserialize<T>(string json)
+        {
+            return JsonConvert.DeserializeObject<T>(json);
         }
     }
 }

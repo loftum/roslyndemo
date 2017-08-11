@@ -1,5 +1,6 @@
-﻿using Editor.Models;
-using Editor.Serializers;
+﻿using Convenient.Stuff.Serializers;
+using Convenient.Stuff.Wpf;
+using Editor.Models;
 using Microsoft.CodeAnalysis.CSharp;
 
 namespace Editor.ViewModels
@@ -21,6 +22,7 @@ namespace Editor.ViewModels
         public void Parse(string inputText)
         {
             var tree = CSharpSyntaxTree.ParseText(inputText);
+            
             SyntaxTree = new SyntaxTreeModel(tree).ToJson(true, true);
         }
     }

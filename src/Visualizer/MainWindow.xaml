@@ -1,0 +1,50 @@
+﻿<wpf:MainWindowBase x:Class="Visualizer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Visualizer"
+        xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
+        xmlns:viewModels="clr-namespace:Visualizer.ViewModels"
+        xmlns:wpf="clr-namespace:Convenient.Stuff.Wpf;assembly=Convenient.Stuff"
+        mc:Ignorable="d"
+        Title="Visualizer" Height="350" Width="525">
+    <Window.DataContext>
+        <viewModels:MainViewModel/>
+    </Window.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <avalonedit:TextEditor Name="Input" Grid.Row="0"
+                                   FontFamily="Consolas"
+                                   SyntaxHighlighting="C#"
+                                   VerticalScrollBarVisibility="Auto"
+                                   HorizontalScrollBarVisibility="Auto"
+                                   ShowLineNumbers="True" />
+            <Grid Grid.Row="1">
+                <WrapPanel>
+                    <Button Click="Parse_Click">Parse</Button>
+                    <Button Click="Compile_Click">Compile</Button>
+                </WrapPanel>
+            </Grid>
+        </Grid>
+        <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Center" VerticalAlignment="Stretch" />
+        <Grid Grid.Column="2">
+            <TextBox BorderThickness="0"
+                     IsReadOnly="True"
+                     FontFamily="Consolas"
+                     Text="{Binding Path=Output, Mode=OneWay}"
+                     HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+        </Grid>
+        
+    </Grid>
+</wpf:MainWindowBase>
+

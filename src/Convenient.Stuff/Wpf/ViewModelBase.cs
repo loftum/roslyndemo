@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Editor.Annotations;
+using Convenient.Stuff.Annotations;
 
-namespace Editor.ViewModels
+namespace Convenient.Stuff.Wpf
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {

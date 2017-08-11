@@ -2,14 +2,14 @@
 using System.ComponentModel;
 using System.Windows;
 using Convenient.Stuff.IO;
-using Editor.ViewModels;
+using Visualizer.ViewModels;
 
-namespace Editor
+namespace Visualizer
 {
     public partial class MainWindow
     {
         private readonly FileManager _fileManager = new FileManager();
-        protected MainViewModel Vm => (MainViewModel) DataContext;
+        protected MainViewModel Vm => (MainViewModel)DataContext;
 
         public MainWindow()
         {
@@ -19,6 +19,11 @@ namespace Editor
         private void Parse_Click(object sender, RoutedEventArgs e)
         {
             Vm.Parse(Input.Text);
+        }
+
+        private void Compile_Click(object sender, RoutedEventArgs e)
+        {
+            Vm.Compile(Input.Text);
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -33,15 +38,8 @@ namespace Editor
 
         protected override void OnInitialized(EventArgs e)
         {
-            var settings = _fileManager.LoadJson<WindowSettings>() ?? new WindowSettings();
-            Top = settings.Top;
-            Left = settings.Left;
-            Width = settings.Width;
-            Height = settings.Height;
-
             var data = _fileManager.LoadJson<Data>() ?? new Data();
             Input.Text = data.Input;
-
             base.OnInitialized(e);
         }
     }

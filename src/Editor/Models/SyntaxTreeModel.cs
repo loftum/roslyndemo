@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Text;
 
 namespace Editor.Models
 {
@@ -14,44 +14,55 @@ namespace Editor.Models
         public SyntaxTreeModel(SyntaxTree tree)
         {
             Tree = tree;
-            Root = new SyntaxNodeModel(tree.GetRoot());
+            Root = new SyntaxNodeMapper().Map(tree.GetRoot());
         }
+    }
+
+    public class SyntaxNodeMapper
+    {
+        public SyntaxNodeModel Map(SyntaxNode node)
+        {
+            return DoMap((dynamic) node);
+        }
+
+        private SyntaxNodeModel DoMap(SyntaxNode other)
+        {
+            var model = new SyntaxNodeModel
+            {
+                Type = other.GetType().Name,
+                Text = other.GetText().ToString(),
+                ChildNodes = other.ChildNodes().Select(Map).ToList(),
+                ChildTokens = other.ChildTokens().Select(t => new SyntaxTokenModel
+                {
+                    Span = t.Span,
+                    Kind = t.Kind().ToString(),
+                    Text = t.Text
+                }).ToList(),
+                Span = other.Span
+            };
+            return model;
+        }
+    }
+
+    public class SyntaxTokenModel
+    {
+        public string Kind { get; set; }
+        public string Text { get; set; }
+        public TextSpan Span { get; set; }
     }
 
     public class SyntaxNodeModel
     {
-        public string Type { get; }
-        public string Text { get; }
-        public List<SyntaxNodeModel> ChildNodes { get; }
-        public Dictionary<string, object> Properties { get; }
+        public string Type { get; set; }
+        public string Text { get; set; }
+        public List<SyntaxNodeModel> ChildNodes { get; set; }
+        public List<SyntaxTokenModel> ChildTokens { get; set; }
+        public TextSpan Span { get; set; }
 
-        private static readonly List<string> IgnoredProperties;
-
-        static SyntaxNodeModel()
+        public SyntaxNodeModel()
         {
-            IgnoredProperties = typeof(SyntaxNode).GetProperties()
-                .Concat(typeof(CompilationUnitSyntax).GetProperties())
-                .Select(p => p.Name)
-                .ToList();
-        }
-
-        private static bool Allow(PropertyInfo property)
-        {
-            return !IgnoredProperties.Contains(property.Name) &&
-                   !typeof(SyntaxNode).IsAssignableFrom(property.PropertyType);
-        }
-
-        public SyntaxNodeModel(SyntaxNode node)
-        {
-            var type = node.GetType();
-            Type = type.Name;
-            Text = node.GetText().ToString();
-
-            Properties = type.GetProperties()
-                .Where(Allow)
-                .ToDictionary(p => p.Name, p => p.GetValue(node));
-
-            ChildNodes = node.ChildNodes().Select(n => new SyntaxNodeModel(n)).ToList();
+            ChildNodes = new List<SyntaxNodeModel>();
+            ChildTokens = new List<SyntaxTokenModel>();
         }
     }
 }
