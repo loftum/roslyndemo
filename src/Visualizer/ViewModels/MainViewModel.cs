@@ -22,7 +22,7 @@ namespace Visualizer.ViewModels
         public void Parse(string inputText)
         {
             var tree = CSharpSyntaxTree.ParseText(inputText);
-
+            
             Output = new SyntaxTreeModel(tree).ToJson(true, true);
         }
 

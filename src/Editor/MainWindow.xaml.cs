@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Windows;
+using System.Windows.Input;
 using Convenient.Stuff.IO;
 using Editor.ViewModels;
 
@@ -14,11 +14,6 @@ namespace Editor
         public MainWindow()
         {
             InitializeComponent();
-        }
-
-        private void Parse_Click(object sender, RoutedEventArgs e)
-        {
-            Vm.Parse(Input.Text);
         }
 
         protected override void OnClosing(CancelEventArgs e)
