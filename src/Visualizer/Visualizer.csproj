@@ -174,6 +174,8 @@
     <Compile Include="Models\SyntaxNodeModel.cs" />
     <Compile Include="Models\SyntaxTokenModel.cs" />
     <Compile Include="Models\SyntaxTreeModel.cs" />
+    <Compile Include="SyntaxNodeExtensions.cs" />
+    <Compile Include="TextExtensions.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

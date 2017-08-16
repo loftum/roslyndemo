@@ -1,5 +1,6 @@
 ﻿using Convenient.Stuff.Serializers;
 using Convenient.Stuff.Wpf;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Visualizer.Models;
 
@@ -19,21 +20,22 @@ namespace Visualizer.ViewModels
             }
         }
 
-        public void Parse(string inputText)
+        public SyntaxTree SyntaxTree { get; private set; }
+
+        public void Parse(string input)
         {
-            var tree = CSharpSyntaxTree.ParseText(inputText);
-            
-            Output = new SyntaxTreeModel(tree).ToJson(true, true);
+            SyntaxTree = CSharpSyntaxTree.ParseText(input);
         }
 
-        public void Compile(string inputText)
+        public string GetTree()
         {
-            var tree = CSharpSyntaxTree.ParseText(inputText);
-            var compilation = CSharpCompilation.Create("hest", new[] {tree});
-            
-            Output = compilation.ToJson(true, true);
+            return new SyntaxTreeModel(SyntaxTree).ToJson(true, true);
+        }
+
+        public string GetCompilation()
+        {
+            var compilation = CSharpCompilation.Create("hest", new[] {SyntaxTree});
+            return compilation.ToJson(true, true);
         }
     }
-
-
 }

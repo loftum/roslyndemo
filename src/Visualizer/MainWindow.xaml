@@ -25,14 +25,20 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <avalonedit:TextEditor Name="Input" Grid.Row="0"
+                                   TextChanged="Input_OnTextChanged"
                                    FontFamily="Consolas"
                                    SyntaxHighlighting="C#"
                                    VerticalScrollBarVisibility="Auto"
                                    HorizontalScrollBarVisibility="Auto"
                                    ShowLineNumbers="True"
-                                   MouseHover="Input_OnMouseHover"/>
+                                   MouseHover="Input_OnMouseHover"
+                                   />
             <Grid Grid.Row="1">
-                <TextBox Name="Meta" IsReadOnly="True" FontFamily="Consolas"/>
+                <WrapPanel>
+                    <TextBox Name="Caret" IsReadOnly="True" FontFamily="Consolas"/>
+                    <TextBox Name="Meta" IsReadOnly="True" FontFamily="Consolas"/>
+                </WrapPanel>
+                
             </Grid>
             <Grid Grid.Row="2">
                 <WrapPanel>
@@ -43,10 +49,11 @@
         </Grid>
         <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Center" VerticalAlignment="Stretch" />
         <Grid Grid.Column="2">
-            <TextBox BorderThickness="0"
+            <avalonedit:TextEditor Name="Output" BorderThickness="0"
+                    ShowLineNumbers="True"
                      IsReadOnly="True"
+                     SyntaxHighlighting="Json"
                      FontFamily="Consolas"
-                     Text="{Binding Path=Output, Mode=OneWay}"
                      HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
         </Grid>
         

@@ -1,53 +1,16 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Linq;
-using System.Net.Mime;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using Convenient.Stuff.IO;
 using ICSharpCode.AvalonEdit;
+using ICSharpCode.AvalonEdit.Search;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Text;
 using Visualizer.ViewModels;
 
 namespace Visualizer
 {
-    public static class TextExtensions
-    {
-        public static int GetIndexAt(this string text, TextViewPosition position)
-        {
-            var index = -1;
-            var line = 1;
-            var column = 0;
-            using (var enumerator = text.GetEnumerator())
-            {
-                while (enumerator.MoveNext())
-                {
-                    index++;
-                    switch (enumerator.Current)
-                    {
-                        case '\r':
-                            break;
-                        case '\n':
-                            line++;
-                            column = 1;
-                            break;
-                        default:
-                            column++;
-                            break;
-                    }
-                    if (line == position.Line && column == position.Column)
-                    {
-                        break;
-                    }
-                }
-            }
-            return index;
-        }
-    }
-
     public partial class MainWindow
     {
         private readonly FileManager _fileManager = new FileManager();
@@ -56,16 +19,26 @@ namespace Visualizer
         public MainWindow()
         {
             InitializeComponent();
+            SearchPanel.Install(Input);
+            SearchPanel.Install(Output);
+            Input.TextArea.Caret.PositionChanged += CaretOnPositionChanged;
+        }
+
+        private void CaretOnPositionChanged(object sender, EventArgs eventArgs)
+        {
+            var index = Input.CaretOffset;
+            Caret.Text = $"Caret: {index}";
+            ShowMetaAt(index);
         }
 
         private void Parse_Click(object sender, RoutedEventArgs e)
         {
-            Vm.Parse(Input.Text);
+            Output.Text = Vm.GetTree();
         }
 
         private void Compile_Click(object sender, RoutedEventArgs e)
         {
-            Vm.Compile(Input.Text);
+            Output.Text = Vm.GetCompilation();
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -89,18 +62,22 @@ namespace Visualizer
         {
             var input = (TextEditor) sender;
             var position = input.GetPositionFromPoint(e.GetPosition((IInputElement)sender));
-            Meta.Text = position.ToString();
+            
             if (position == null)
             {
                 return;
             }
             
             var index = input.Text.GetIndexAt(position.Value);
-            var caret = input.CaretOffset;
             if (index < 0)
             {
                 return;
             }
+            ShowMetaAt(index);
+        }
+
+        private void ShowMetaAt(int index)
+        {
             var tree = CSharpSyntaxTree.ParseText(Input.Text);
             SyntaxNode root;
             if (!tree.TryGetRoot(out root))
@@ -109,54 +86,17 @@ namespace Visualizer
             }
             var node = root.GetMostSpecificNodeAt(index);
 
-            Meta.Text = $"{node.Kind()} {node} pos={index} caret={caret}";
-        }
-    }
-
-    public static class SyntaxNodeExtensions
-    {
-        public static SyntaxNodeOrToken GetMostSpecificNodeAt(this SyntaxNode root, int position)
-        {
-            SyntaxNodeOrToken specific = root;
-            foreach (var node in root.DescendantNodesAndTokens())
-            {
-                if (node.FullSpan.Covers(position) && node.FullSpan.IsMoreSpecificThan(specific.FullSpan))
-                {
-                    specific = node;
-                }
-            }
-            return specific;
+            Meta.Text = $"{node.Kind()} {node}";
         }
 
-        public static bool Covers(this TextSpan span, int position)
+        private void Input_OnTextChanged(object sender, EventArgs e)
         {
-            return span.Start <= position && span.End >= position;
-        }
-
-        public static bool IsMoreSpecificThan(this TextSpan span, TextSpan other)
-        {
-            return span.Start >= other.Start && span.End <= other.End;
+            Vm.Parse(Input.Text);
         }
     }
 
     public class Data
     {
         public string Input { get; set; }
-    }
-
-    public class WindowSettings
-    {
-        public double Top { get; set; }
-        public double Left { get; set; }
-        public double Width { get; set; }
-        public double Height { get; set; }
-
-        public WindowSettings()
-        {
-            Top = 0;
-            Left = 0;
-            Width = 800;
-            Height = 600;
-        }
     }
 }
