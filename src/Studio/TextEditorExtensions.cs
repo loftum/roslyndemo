@@ -1,21 +1,26 @@
+using System.Windows.Media.TextFormatting;
 using ICSharpCode.AvalonEdit;
+using ICSharpCode.AvalonEdit.Document;
+using Microsoft.CodeAnalysis.Text;
 
 namespace Studio
 {
     public static class TextEditorExtensions
     {
-        public static string GetSelectedOrAllText(this TextEditor editor)
+        public static CodeSegment GetSelectedOrAllText(this TextEditor editor)
         {
-            var selectedText = editor.SelectedText;
-            return string.IsNullOrEmpty(selectedText) ? editor.Text : selectedText;
+            return editor.SelectionLength > 0
+                ? new CodeSegment(editor.SelectionStart, editor.SelectedText)
+                : new CodeSegment(0, editor.Text);
         }
 
-        public static string GetCurrentStatement(this TextEditor editor)
+        public static CodeSegment GetCurrentStatement(this TextEditor editor)
         {
+            
             var caret = editor.TextArea.Caret;
             if (caret.Offset <= 0)
             {
-                return "";
+                return CodeSegment.Empty;
             }
             var start = caret.Offset <= 0 ? 0 : caret.Offset - 1;
             var lineFeeds = 0;
@@ -37,7 +42,7 @@ namespace Studio
                 start--;
             }
             var currentLine = editor.Text.Substring(start, caret.Offset - start).Trim();
-            return currentLine;
+            return new CodeSegment(start, currentLine);
         }
     }
 }

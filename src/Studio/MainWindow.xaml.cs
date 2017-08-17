@@ -40,9 +40,13 @@ namespace Studio
             if (e.Key == Key.Space && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
                 var statement = Input.GetCurrentStatement();
-                var tree = CSharpSyntaxTree.ParseText(statement);
+                var tree = CSharpSyntaxTree.ParseText(statement.Text);
 
+                var compilation = CSharpCompilation.CreateScriptCompilation("hest", tree);
                 
+                var semanticModel = compilation.GetSemanticModel(tree);
+
+                var symbols = semanticModel.LookupSymbols();
                 
 
                 string prefix;
