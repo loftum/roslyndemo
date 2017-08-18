@@ -180,6 +180,7 @@
     </ApplicationDefinition>
     <Compile Include="CodeSegment.cs" />
     <Compile Include="TextEditorExtensions.cs" />
+    <Compile Include="TypeExtensions.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

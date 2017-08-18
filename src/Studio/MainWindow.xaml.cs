@@ -24,6 +24,7 @@ namespace Studio
             InitializeComponent();
             SearchPanel.Install(Input);
             ConsoleOut.Writer.Add(new DocumentTextWriter(Console.Document, 0), Dispatcher);
+            Input.Focus();
         }
 
         private async void Input_KeyUp(object sender, KeyEventArgs e)

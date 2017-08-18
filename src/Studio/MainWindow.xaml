@@ -19,14 +19,25 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
-            <avalonedit:TextEditor Name="Input"
-                ShowLineNumbers="True"
-                FontFamily="Consolas"
-                SyntaxHighlighting="C#"
-                KeyUp="Input_KeyUp"
-                KeyDown="Input_KeyDown"
-                HorizontalScrollBarVisibility="Auto"
-                VerticalScrollBarVisibility="Auto"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <avalonedit:TextEditor Name="Input" Grid.Column="0"
+                                       ShowLineNumbers="True"
+                                       FontFamily="Consolas"
+                                       SyntaxHighlighting="C#"
+                                       KeyUp="Input_KeyUp"
+                                       KeyDown="Input_KeyDown"
+                                       HorizontalScrollBarVisibility="Auto"
+                                       VerticalScrollBarVisibility="Auto"/>
+                <Grid Grid.Column="1">
+                    <ListView ItemsSource="{Binding Path=Variables, Mode=OneWay}">
+                    </ListView>
+                </Grid>
+            </Grid>
+            
         </Grid>
         <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Height="5"/>
         <Grid Grid.Row="2">
