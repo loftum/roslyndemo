@@ -2,81 +2,90 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
+using Convenient.Stuff.Models;
+using Convenient.Stuff.Syntax;
 using Convenient.Stuff.Wpf;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Scripting;
+using Microsoft.CodeAnalysis.Text;
+using Studio.Extensions;
 
 namespace Studio.ViewModels
 {
-    public class VariableModel
-    {
-        public Type Type { get; }
-        public string Name { get; }
-        public object Value { get; }
-
-        public VariableModel(Type type, string name, object value)
-        {
-            Type = type;
-            Name = name;
-            Value = value;
-        }
-
-        public override string ToString()
-        {
-            return $"{Type.GetFriendlyName()} {Name} {Value ?? "null"}";
-        }
-    }
-
-    public class Interactive
-    {
-        public string GetHelp()
-        {
-            return "help";
-        }
-    }
-
     public class MainViewModel : ViewModelBase
     {
-        private CSharpSyntaxTree _syntaxTree;
-        private CSharpCompilation _compilation;
-        private ScriptState _script;
+        private ScriptState _scriptState;
+        private string _source;
+
+        public string Source
+        {
+            get { return _source; }
+            set { _source = value; OnPropertyChanged(); }
+        }
 
         public ObservableCollection<VariableModel> Variables { get; } = new ObservableCollection<VariableModel>();
 
         public MainViewModel()
         {
-            _syntaxTree = (CSharpSyntaxTree) CSharpSyntaxTree.ParseText("");
-            _compilation = CSharpCompilation.Create("hest");
             Reset().Wait();
         }
 
+        private static readonly string[] RoslynAssemblies = {
+            "Microsoft.CodeAnalysis",
+            "Microsoft.CodeAnalysis.CSharp",
+            "Microsoft.CodeAnalysis.Scripting",
+            "Microsoft.CodeAnalysis.CSharp.Scripting"
+        };
+
         public async Task Reset()
         {
-            _script = await CSharpScript.RunAsync("", ScriptOptions.Default, new Interactive(), typeof(Interactive));
+            var options = ScriptOptions.Default.WithReferences(AppDomain.CurrentDomain.GetAssemblies());
+            var init = string.Join("", RoslynAssemblies.Select(a => $"using {a};"));
+            _scriptState = await CSharpScript.RunAsync(init, options, new Interactive(),
+                typeof(Interactive));
             Variables.Clear();
+            var source = await SyntaxTree.GetTextAsync();
+            Source = source.ToString();
         }
 
-        public IList<CompletionData> GetCompletions(string text)
+        protected CSharpCompilation Compilation => (CSharpCompilation)_scriptState.Script.GetCompilation();
+        protected CSharpSyntaxTree SyntaxTree => (CSharpSyntaxTree)Compilation.SyntaxTrees.Single();
+
+        public IEnumerable<CompletionData> GetCompletions(string code)
         {
-            var tree = (CSharpSyntaxTree) CSharpSyntaxTree.ParseText(text);
-            var compilation = _compilation.AddSyntaxTrees(tree);
+            if (string.IsNullOrEmpty(code))
+            {
+                return typeof(Interactive).GetMethodsPropertiesAndFields()
+                    .Select(m => new CompletionData("", m.Name));
+            }
+            var tree = CSharpSyntaxTree.ParseText(code);
+
+            var compilation = Compilation.ReplaceSyntaxTree(SyntaxTree, tree);
+
             var semantics = compilation.GetSemanticModel(tree);
-            var symbols = semantics.LookupSymbols(text.Length - 1);
-            return symbols.Select(s => new CompletionData("", s.Name)).ToList();
+            var symbol = semantics.GetEnclosingSymbol(code.Length);
+            
+            
+            var symbols = semantics.LookupSymbols(code.Length);
+            return symbols.Select(s => new CompletionData("", s. Name, $"{s.Kind} {s.GetType().Name} {s.Name}"));
         }
 
         public async Task<object> Evaluate(string code)
         {
             try
             {
-                _script = await _script.ContinueWithAsync(code);
+                _scriptState = await _scriptState.ContinueWithAsync(code);
 
-                var newVariables = _script.Variables.Where(v => Variables.All(e => !AreEqual(v, e)));
+                var newVariables = _scriptState.Variables.Where(v => Variables.All(e => !AreEqual(v, e)));
                 Variables.AddRange(newVariables.Select(v => new VariableModel(v.Type, v.Name, v.Value)));
 
-                return _script.ReturnValue ?? _script.Exception;
+                return _scriptState.ReturnValue ?? _scriptState.Exception;
             }
             catch (CompilationErrorException e)
             {
@@ -85,6 +94,11 @@ namespace Studio.ViewModels
             catch (Exception e)
             {
                 return e;
+            }
+            finally
+            {
+                var source = await SyntaxTree.GetTextAsync();
+                Source = source.ToString();
             }
         }
 

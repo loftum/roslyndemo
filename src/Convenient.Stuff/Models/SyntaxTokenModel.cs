@@ -1,4 +1,4 @@
-﻿namespace Visualizer.Models
+﻿namespace Convenient.Stuff.Models
 {
     public class SyntaxTokenModel
     {

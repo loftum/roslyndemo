@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
-namespace Studio
+namespace Studio.Extensions
 {
     public static class TypeExtensions
     {
@@ -34,6 +35,11 @@ namespace Studio
                 return $"{type.Name.Split('`')[0]}<{string.Join(", ", type.GetGenericArguments().Select(GetFriendlyName))}>";
             }
             return type.Name;
+        }
+
+        public static IEnumerable<MemberInfo> GetMethodsPropertiesAndFields(this Type type)
+        {
+            return type.GetMethods().Cast<MemberInfo>().Concat(type.GetProperties()).Concat(type.GetFields());
         }
     }
 }

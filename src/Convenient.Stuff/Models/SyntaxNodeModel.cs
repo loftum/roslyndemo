@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Visualizer.Models
+namespace Convenient.Stuff.Models
 {
     public class SyntaxNodeModel
     {

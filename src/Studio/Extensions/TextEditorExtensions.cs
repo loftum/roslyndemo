@@ -1,9 +1,7 @@
-using System.Windows.Media.TextFormatting;
 using ICSharpCode.AvalonEdit;
-using ICSharpCode.AvalonEdit.Document;
-using Microsoft.CodeAnalysis.Text;
+using Studio.ViewModels;
 
-namespace Studio
+namespace Studio.Extensions
 {
     public static class TextEditorExtensions
     {

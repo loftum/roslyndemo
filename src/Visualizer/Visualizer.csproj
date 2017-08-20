@@ -170,11 +170,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Models\SyntaxNodeMapper.cs" />
-    <Compile Include="Models\SyntaxNodeModel.cs" />
-    <Compile Include="Models\SyntaxTokenModel.cs" />
-    <Compile Include="Models\SyntaxTreeModel.cs" />
-    <Compile Include="SyntaxNodeExtensions.cs" />
     <Compile Include="TextExtensions.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Page Include="MainWindow.xaml">
@@ -227,6 +222,9 @@
       <Project>{0084a689-fc90-4fe2-9f96-66abf2b37591}</Project>
       <Name>Convenient.Stuff</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -178,10 +178,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="CodeSegment.cs" />
-    <Compile Include="TextEditorExtensions.cs" />
-    <Compile Include="TypeExtensions.cs" />
+    <Compile Include="Extensions\ResultExtensions.cs" />
+    <Compile Include="Extensions\ListExtensions.cs" />
+    <Compile Include="ViewModels\CodeSegment.cs" />
+    <Compile Include="ViewModels\CompletionData.cs" />
+    <Compile Include="Extensions\TextEditorExtensions.cs" />
+    <Compile Include="Extensions\TypeExtensions.cs" />
+    <Compile Include="ViewModels\Interactive.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\VariableModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

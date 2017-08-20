@@ -2,7 +2,7 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace Visualizer.Models
+namespace Convenient.Stuff.Models
 {
     public class SyntaxNodeMapper
     {

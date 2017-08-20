@@ -1,14 +1,27 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
-namespace Visualizer
+namespace Convenient.Stuff.Syntax
 {
     public static class SyntaxNodeExtensions
     {
-        public static SyntaxNodeOrToken GetMostSpecificNodeAt(this SyntaxNode root, int position)
+        public static SyntaxNodeOrToken GetMostSpecificNodeOrTokenAt(this SyntaxNode root, int position)
         {
             SyntaxNodeOrToken specific = root;
             foreach (var node in root.DescendantNodesAndTokens())
+            {
+                if (node.FullSpan.Covers(position) && node.FullSpan.IsMoreSpecificThan(specific.FullSpan))
+                {
+                    specific = node;
+                }
+            }
+            return specific;
+        }
+
+        public static SyntaxNode GetMostSpecificNodeAt(this SyntaxNode root, int position)
+        {
+            var specific = root;
+            foreach (var node in root.DescendantNodes())
             {
                 if (node.FullSpan.Covers(position) && node.FullSpan.IsMoreSpecificThan(specific.FullSpan))
                 {

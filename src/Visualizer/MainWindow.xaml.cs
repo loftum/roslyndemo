@@ -2,7 +2,9 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
+using Convenient.Stuff;
 using Convenient.Stuff.IO;
+using Convenient.Stuff.Syntax;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Search;
 using Microsoft.CodeAnalysis;
@@ -84,7 +86,7 @@ namespace Visualizer
             {
                 return;
             }
-            var node = root.GetMostSpecificNodeAt(index);
+            var node = root.GetMostSpecificNodeOrTokenAt(index);
 
             Meta.Text = $"{node.Kind()} {node}";
         }
@@ -93,10 +95,5 @@ namespace Visualizer
         {
             Vm.Parse(Input.Text);
         }
-    }
-
-    public class Data
-    {
-        public string Input { get; set; }
     }
 }

@@ -1,8 +1,8 @@
-﻿using Convenient.Stuff.Serializers;
+﻿using Convenient.Stuff.Models;
+using Convenient.Stuff.Serializers;
 using Convenient.Stuff.Wpf;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Visualizer.Models;
 
 namespace Visualizer.ViewModels
 {

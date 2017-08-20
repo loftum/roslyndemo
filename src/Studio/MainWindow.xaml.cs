@@ -1,22 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel;
 using System.Windows.Input;
-using System.Windows.Media;
+using Convenient.Stuff;
 using Convenient.Stuff.ConsoleRedirect;
+using Convenient.Stuff.IO;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Search;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Scripting;
+using Studio.Extensions;
 using Studio.ViewModels;
 
 namespace Studio
 {
     public partial class MainWindow
     {
+        private readonly FileManager _fileManager = new FileManager();
+
         protected MainViewModel Vm => (MainViewModel) DataContext;
 
         public MainWindow()
@@ -33,7 +33,7 @@ namespace Studio
             {
                 var statement = Input.GetSelectedOrAllText();
                 var result = await Vm.Evaluate(statement.Text);
-                Output.Text = result?.ToString();
+                Output.Text = result.ToResultString();
                 Input.Focus();
             }
         }
@@ -51,6 +51,10 @@ namespace Studio
                 completionWindow.Closed += (o, ea) => completionWindow = null;
                 e.Handled = true;
             }
+            else if (e.Key == Key.S && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            {
+                Save();
+            }
         }
 
         private void Console_ScrollToEnd(object sender, EventArgs e)
@@ -58,39 +62,26 @@ namespace Studio
             var textBox = sender as TextEditor;
             textBox?.ScrollToEnd();
         }
-    }
 
-    public static class ListExtensions
-    {
-        public static void AddRange<T>(this IList<T> list, IEnumerable<T> items)
+        private void Save()
         {
-            foreach (var item in items)
+            _fileManager.SaveJson(new Data
             {
-                list.Add(item);
-            }
+                Input = Input.Text
+            });
         }
-    }
 
-    public class CompletionData : ICompletionData
-    {
-        public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
+        protected override void OnClosing(CancelEventArgs e)
         {
-            textArea.Document.Replace(completionSegment, Completion);
+            Save();
+            base.OnClosing(e);
         }
 
-        public CompletionData(string prefix, string completion)
+        protected override void OnInitialized(EventArgs e)
         {
-            Prefix = prefix;
-            Completion = completion;
+            var data = _fileManager.LoadJson<Data>() ?? new Data();
+            Input.Text = data.Input;
+            base.OnInitialized(e);
         }
-
-        public string Prefix { get; }
-        public string Completion { get; }
-
-        public ImageSource Image => null;
-        public string Text => $"{Prefix}{Completion}";
-        public object Content => Text;
-        public object Description => Text;
-        public double Priority { get; set; }
     }
 }

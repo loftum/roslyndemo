@@ -20,21 +20,30 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <avalonedit:TextEditor Name="Input" Grid.Column="0"
-                                       ShowLineNumbers="True"
-                                       FontFamily="Consolas"
-                                       SyntaxHighlighting="C#"
-                                       KeyUp="Input_KeyUp"
-                                       KeyDown="Input_KeyDown"
-                                       HorizontalScrollBarVisibility="Auto"
-                                       VerticalScrollBarVisibility="Auto"/>
-                <Grid Grid.Column="1">
-                    <ListView ItemsSource="{Binding Path=Variables, Mode=OneWay}">
-                    </ListView>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <avalonedit:TextEditor Name="Input" Grid.Column="0"
+                                           ShowLineNumbers="True"
+                                           FontFamily="Consolas"
+                                           SyntaxHighlighting="C#"
+                                           KeyUp="Input_KeyUp"
+                                           KeyDown="Input_KeyDown"
+                                           HorizontalScrollBarVisibility="Auto"
+                                           VerticalScrollBarVisibility="Auto"/>
+                    <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Center" Width="5"/>
+                    <TabControl Grid.Column="2" BorderThickness="0">
+                        <TabItem Header="SyntaxTree">
+                            <TextBox IsReadOnly="True" FontFamily="Consolas" Text="{Binding Path=Source, Mode=OneWay}"/>
+                        </TabItem>
+                        <TabItem Header="Variables">
+                            <ListView ItemsSource="{Binding Path=Variables, Mode=OneWay}">
+                            </ListView>
+                        </TabItem>
+                    </TabControl>
                 </Grid>
             </Grid>
             
@@ -47,22 +56,42 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBox Grid.Column="0"
-                         BorderThickness="0"
-                         Name="Output"
-                         FontFamily="Consolas"
-                         IsReadOnly="True" />
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" FontFamily="Consolas">Output</TextBlock>
+                    <TextBox Grid.Row="1"
+                             BorderThickness="0"
+                             Name="Output"
+                             FontFamily="Consolas"
+                             IsReadOnly="True"
+                             HorizontalScrollBarVisibility="Auto"
+                             VerticalScrollBarVisibility="Auto"/>
+                </Grid>
+                
                 <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Center" Width="5"/>
-                <avalonedit:TextEditor Grid.Column="2"
-                         Name="Console"
-                         HorizontalScrollBarVisibility="Auto"
-                         VerticalScrollBarVisibility="Auto"
-                         BorderThickness="0"
-                         FontFamily="Consolas"
-                         IsReadOnly="True"
-                         Background="Black"
-                         Foreground="#cccccc"
-                         TextChanged="Console_ScrollToEnd"/>
+                <Grid Grid.Column="2">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Background="Black" FontFamily="Consolas" Foreground="#cccccc">Console</TextBlock>
+                        <avalonedit:TextEditor Grid.Row="1"
+                            Name="Console"
+                            HorizontalScrollBarVisibility="Auto"
+                            VerticalScrollBarVisibility="Auto"
+                            BorderThickness="0"
+                            FontFamily="Consolas"
+                            IsReadOnly="True"
+                            Background="Black"
+                            Foreground="#cccccc"
+                            TextChanged="Console_ScrollToEnd"/>
+                    </Grid>
+                    
+                </Grid>
             </Grid>
         </Grid>
     </Grid>

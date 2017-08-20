@@ -1,4 +1,4 @@
-namespace Studio
+namespace Studio.ViewModels
 {
     public struct CodeSegment
     {
