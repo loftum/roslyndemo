@@ -64,7 +64,13 @@ namespace Studio.ViewModels
                 return typeof(Interactive).GetMethodsPropertiesAndFields()
                     .Select(m => new CompletionData("", m.Name));
             }
-            var tree = CSharpSyntaxTree.ParseText(code);
+
+            var script = _scriptState.Script.ContinueWith(code);
+            script.Compile();
+
+            var compilation = script.GetCompilation();
+
+            var tree = compilation.SyntaxTrees.Single();
 
             var nodes = GetNodes(tree.GetRoot().GetMostSpecificNodeOrTokenAt(code.Length - 1));
 
@@ -73,18 +79,18 @@ namespace Studio.ViewModels
                 return new List<CompletionData>();
             }
 
-            var compilation = Compilation.ReplaceSyntaxTree(SyntaxTree, tree);
+            
+
+            var name = nodes.Item1.ToString();
 
             var semantics = compilation.GetSemanticModel(tree);
-            var symbol = semantics.GetSymbolInfo(nodes.Item1);
             
+            var info = semantics.GetSymbolInfo(nodes.Item1);
             var type = semantics.GetTypeInfo(nodes.Item1);
-            var symbols = type.ConvertedType.GetMembers();
-
-            //var info = semantics.GetSymbolInfo(nodes.Item1);
             
-            //var symbols = semantics.LookupSymbols(code.Length, info.Symbol.ContainingType);
-            return symbols.Select(s => new CompletionData("", s. Name, $"{s.Kind} {s.GetType().Name} {s.Name}"));
+            var symbols = semantics.LookupSymbols(code.Length, type.Type);
+            return symbols.Select(s => new CompletionData("", s.Name, $"{s.Kind} {s.GetType().Name} {s.Name}"));
+            
         }
 
         public static Tuple<IdentifierNameSyntax, IdentifierNameSyntax> GetNodes(SyntaxNodeOrToken nodeOrToken)
