@@ -36,7 +36,7 @@
                                            VerticalScrollBarVisibility="Auto"/>
                     <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Center" Width="5"/>
                     <TabControl Grid.Column="2" BorderThickness="0">
-                        <TabItem Header="SyntaxTree">
+                        <TabItem Header="Code">
                             <TextBox IsReadOnly="True" FontFamily="Consolas" Text="{Binding Path=Source, Mode=OneWay}"/>
                         </TabItem>
                         <TabItem Header="Variables">

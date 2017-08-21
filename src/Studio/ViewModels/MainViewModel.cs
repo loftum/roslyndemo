@@ -66,14 +66,59 @@ namespace Studio.ViewModels
             }
             var tree = CSharpSyntaxTree.ParseText(code);
 
+            var nodes = GetNodes(tree.GetRoot().GetMostSpecificNodeOrTokenAt(code.Length - 1));
+
+            if (nodes.Item1 == null)
+            {
+                return new List<CompletionData>();
+            }
+
             var compilation = Compilation.ReplaceSyntaxTree(SyntaxTree, tree);
 
             var semantics = compilation.GetSemanticModel(tree);
-            var symbol = semantics.GetEnclosingSymbol(code.Length);
+            var symbol = semantics.GetSymbolInfo(nodes.Item1);
             
+            var type = semantics.GetTypeInfo(nodes.Item1);
+            var symbols = type.ConvertedType.GetMembers();
+
+            //var info = semantics.GetSymbolInfo(nodes.Item1);
             
-            var symbols = semantics.LookupSymbols(code.Length);
+            //var symbols = semantics.LookupSymbols(code.Length, info.Symbol.ContainingType);
             return symbols.Select(s => new CompletionData("", s. Name, $"{s.Kind} {s.GetType().Name} {s.Name}"));
+        }
+
+        public static Tuple<IdentifierNameSyntax, IdentifierNameSyntax> GetNodes(SyntaxNodeOrToken nodeOrToken)
+        {
+            IdentifierNameSyntax prefix = null;
+            IdentifierNameSyntax theDude = null;
+
+            SyntaxNodeOrToken dot;
+
+            switch (nodeOrToken.Kind())
+            {
+                case SyntaxKind.IdentifierName:
+                    prefix = (IdentifierNameSyntax)nodeOrToken.AsNode();
+                    dot = nodeOrToken.GetPreviousSibling();
+                    if (dot.Kind() != SyntaxKind.DotToken)
+                    {
+                        return new Tuple<IdentifierNameSyntax, IdentifierNameSyntax>(null, prefix);
+                    }
+                    break;
+                case SyntaxKind.DotToken:
+                    dot = nodeOrToken;
+                    break;
+                default:
+                    return new Tuple<IdentifierNameSyntax, IdentifierNameSyntax>(null, null);
+
+            }
+            
+            var previous = dot.GetPreviousSibling();
+            if (previous.Kind() == SyntaxKind.IdentifierName)
+            {
+                theDude = (IdentifierNameSyntax) previous.AsNode();
+            }
+
+            return new Tuple<IdentifierNameSyntax, IdentifierNameSyntax>(theDude, prefix);
         }
 
         public async Task<object> Evaluate(string code)
