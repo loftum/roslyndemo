@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Convenient.Stuff.Models
+namespace Convenient.Stuff.Models.Syntax
 {
     public class SyntaxNodeModel
     {

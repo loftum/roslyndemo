@@ -2,18 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using Convenient.Stuff.Models;
-using Convenient.Stuff.Syntax;
+using Convenient.Stuff.Serializers;
 using Convenient.Stuff.Wpf;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Scripting;
-using Microsoft.CodeAnalysis.Text;
 using Studio.Extensions;
 
 namespace Studio.ViewModels
@@ -21,12 +15,12 @@ namespace Studio.ViewModels
     public class MainViewModel : ViewModelBase
     {
         private ScriptState _scriptState;
-        private string _source;
+        private string _code;
 
-        public string Source
+        public string Code
         {
-            get { return _source; }
-            set { _source = value; OnPropertyChanged(); }
+            get { return _code; }
+            set { _code = value; OnPropertyChanged(); }
         }
 
         public ObservableCollection<VariableModel> Variables { get; } = new ObservableCollection<VariableModel>();
@@ -50,8 +44,6 @@ namespace Studio.ViewModels
             _scriptState = await CSharpScript.RunAsync(init, options, new Interactive(),
                 typeof(Interactive));
             Variables.Clear();
-            var source = await SyntaxTree.GetTextAsync();
-            Source = source.ToString();
         }
 
         protected CSharpCompilation Compilation => (CSharpCompilation)_scriptState.Script.GetCompilation();
@@ -67,64 +59,9 @@ namespace Studio.ViewModels
 
             var script = _scriptState.Script.ContinueWith(code);
             script.Compile();
-
-            var compilation = script.GetCompilation();
-
-            var tree = compilation.SyntaxTrees.Single();
-
-            var nodes = GetNodes(tree.GetRoot().GetMostSpecificNodeOrTokenAt(code.Length - 1));
-
-            if (nodes.Item1 == null)
-            {
-                return new List<CompletionData>();
-            }
-
-            
-
-            var name = nodes.Item1.ToString();
-
-            var semantics = compilation.GetSemanticModel(tree);
-            
-            var info = semantics.GetSymbolInfo(nodes.Item1);
-            var type = semantics.GetTypeInfo(nodes.Item1);
-            
-            var symbols = semantics.LookupSymbols(code.Length, type.Type);
-            return symbols.Select(s => new CompletionData("", s.Name, $"{s.Kind} {s.GetType().Name} {s.Name}"));
-            
-        }
-
-        public static Tuple<IdentifierNameSyntax, IdentifierNameSyntax> GetNodes(SyntaxNodeOrToken nodeOrToken)
-        {
-            IdentifierNameSyntax prefix = null;
-            IdentifierNameSyntax theDude = null;
-
-            SyntaxNodeOrToken dot;
-
-            switch (nodeOrToken.Kind())
-            {
-                case SyntaxKind.IdentifierName:
-                    prefix = (IdentifierNameSyntax)nodeOrToken.AsNode();
-                    dot = nodeOrToken.GetPreviousSibling();
-                    if (dot.Kind() != SyntaxKind.DotToken)
-                    {
-                        return new Tuple<IdentifierNameSyntax, IdentifierNameSyntax>(null, prefix);
-                    }
-                    break;
-                case SyntaxKind.DotToken:
-                    dot = nodeOrToken;
-                    break;
-                default:
-                    return new Tuple<IdentifierNameSyntax, IdentifierNameSyntax>(null, null);
-
-            }
-            
-            var previous = dot.GetPreviousSibling();
-            if (previous.Kind() == SyntaxKind.IdentifierName)
-            {
-                theDude = (IdentifierNameSyntax) previous.AsNode();
-            }
-
-            return new Tuple<IdentifierNameSyntax, IdentifierNameSyntax>(theDude, prefix);
+            var completer = new CodeCompleter(script);
+            Code = completer.ToJson(true, true);
+            return completer.GetCompletions();
         }
 
         public async Task<object> Evaluate(string code)
@@ -149,7 +86,7 @@ namespace Studio.ViewModels
             finally
             {
                 var source = await SyntaxTree.GetTextAsync();
-                Source = source.ToString();
+                Code = source.ToString();
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 
 namespace Convenient.Stuff.Serializers
@@ -9,6 +10,7 @@ namespace Convenient.Stuff.Serializers
         {
             var formatting = indented ? Formatting.Indented : Formatting.None;
             var settings = new JsonSerializerSettings();
+            settings.Converters.Add(new StringEnumConverter());
             if (suppressErrors)
             {
                 settings.Error = Suppress;

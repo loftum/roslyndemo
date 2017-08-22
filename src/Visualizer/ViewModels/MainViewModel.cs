@@ -1,4 +1,4 @@
-﻿using Convenient.Stuff.Models;
+﻿using Convenient.Stuff.Models.Syntax;
 using Convenient.Stuff.Serializers;
 using Convenient.Stuff.Wpf;
 using Microsoft.CodeAnalysis;

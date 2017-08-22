@@ -2,13 +2,13 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace Convenient.Stuff.Models
+namespace Convenient.Stuff.Models.Syntax
 {
     public class SyntaxNodeMapper
     {
         public SyntaxNodeModel Map(SyntaxNode node)
         {
-            return DoMap((dynamic) node);
+            return node == null ? null : DoMap((dynamic) node);
         }
 
         private SyntaxNodeModel DoMap(SyntaxNode node)

@@ -1,6 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 
-namespace Convenient.Stuff.Models
+namespace Convenient.Stuff.Models.Syntax
 {
     public class SyntaxTreeModel
     {

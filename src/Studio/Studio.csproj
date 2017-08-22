@@ -180,6 +180,7 @@
     </ApplicationDefinition>
     <Compile Include="Extensions\ResultExtensions.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
+    <Compile Include="ViewModels\CodeCompleter.cs" />
     <Compile Include="ViewModels\CodeSegment.cs" />
     <Compile Include="ViewModels\CompletionData.cs" />
     <Compile Include="Extensions\TextEditorExtensions.cs" />
