@@ -4,6 +4,7 @@ namespace Convenient.Stuff.Models.Syntax
 {
     public class SyntaxNodeModel
     {
+        public string Type { get; set; }
         public string Kind { get; set; }
         public string Text { get; set; }
         public List<SyntaxNodeModel> ChildNodes { get; set; }

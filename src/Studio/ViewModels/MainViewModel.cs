@@ -39,9 +39,9 @@ namespace Studio.ViewModels
 
         public async Task Reset()
         {
-            var options = ScriptOptions.Default.WithReferences(AppDomain.CurrentDomain.GetAssemblies());
-            var init = string.Join("", RoslynAssemblies.Select(a => $"using {a};"));
-            _scriptState = await CSharpScript.RunAsync(init, options, new Interactive(),
+            var options = ScriptOptions.Default.WithReferences(AppDomain.CurrentDomain.GetAssemblies())
+                .WithImports(RoslynAssemblies);
+            _scriptState = await CSharpScript.RunAsync("", options, new Interactive(),
                 typeof(Interactive));
             Variables.Clear();
         }
@@ -51,12 +51,6 @@ namespace Studio.ViewModels
 
         public IEnumerable<CompletionData> GetCompletions(string code)
         {
-            if (string.IsNullOrEmpty(code))
-            {
-                return typeof(Interactive).GetMethodsPropertiesAndFields()
-                    .Select(m => new CompletionData("", m.Name));
-            }
-
             var script = _scriptState.Script.ContinueWith(code);
             script.Compile();
             var completer = new CodeCompleter(script);
@@ -69,10 +63,8 @@ namespace Studio.ViewModels
             try
             {
                 _scriptState = await _scriptState.ContinueWithAsync(code);
-
-                var newVariables = _scriptState.Variables.Where(v => Variables.All(e => !AreEqual(v, e)));
-                Variables.AddRange(newVariables.Select(v => new VariableModel(v.Type, v.Name, v.Value)));
-
+                Variables.Clear();
+                Variables.AddRange(_scriptState.Variables.Select(v => new VariableModel(v)));
                 return _scriptState.ReturnValue ?? _scriptState.Exception;
             }
             catch (CompilationErrorException e)

@@ -5,116 +5,142 @@ using Convenient.Stuff.Models.Syntax;
 using Convenient.Stuff.Syntax;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Scripting;
 
 namespace Studio.ViewModels
 {
+    public static class CodeCompletionExtensions
+    {
+        public static CompletionSymbols GetCompletionSymbols(this SemanticModel semantics, SyntaxNode node, INamespaceOrTypeSymbol defaultValue)
+        {
+            if (node == null)
+            {
+                return new CompletionSymbols(defaultValue, null);
+            }
+            var symbolInfo = semantics.GetSymbolInfo(node);
+
+            var symbol = symbolInfo.Symbol;
+            var namespaceOrType = symbol as INamespaceOrTypeSymbol;
+            if (namespaceOrType != null)
+            {
+                return new CompletionSymbols(namespaceOrType, null);
+            }
+
+            var s = node as LiteralExpressionSyntax;
+            
+
+            
+
+            var typeInfo = semantics.GetTypeInfo(node);
+            var type = typeInfo.ConvertedType ?? typeInfo.Type;
+            return type == null
+                ? new CompletionSymbols(defaultValue, null)
+                : new CompletionSymbols(type, symbol);
+        }
+    }
+
+    public struct CompletionSymbols
+    {
+        public INamespaceOrTypeSymbol NamespaceOrType { get; }
+        public ISymbol Symbol { get; }
+
+        public bool SearchForStatic => Symbol == null;
+
+        public CompletionSymbols(INamespaceOrTypeSymbol namespaceOrType, ISymbol symbol)
+        {
+            NamespaceOrType = namespaceOrType;
+            Symbol = symbol;
+        }
+    }
+
     public class CodeCompleter
     {
-        private SyntaxNode _contextNode;
-        private SyntaxNode _prefixNode;
         private readonly IList<ISymbol> _symbols;
         private readonly SemanticModel _semantics;
-        private readonly int _position;
 
-        public SyntaxNodeModel ContextNode { get; }
-        public SymbolInfoModel ContextSymbolInfo { get; }
-        public TypeInfoModel ContextTypeInfo { get; }
+        public SyntaxNodeModel ContainerNode { get; }
         public SyntaxNodeModel PrefixNode { get; }
-        public List<SymbolModel> Symbols { get; }
 
-        private static readonly SymbolDisplayFormat ContentFormat;
-        private static readonly SymbolDisplayFormat DescriptionFormat;
-
-        static CodeCompleter()
-        {
-            ContentFormat = new SymbolDisplayFormat(SymbolDisplayGlobalNamespaceStyle.Omitted,
-                SymbolDisplayTypeQualificationStyle.NameAndContainingTypes,
-                SymbolDisplayGenericsOptions.IncludeTypeParameters,
-                SymbolDisplayMemberOptions.IncludeParameters,
-                SymbolDisplayDelegateStyle.NameAndParameters,
-                SymbolDisplayExtensionMethodStyle.InstanceMethod,
-                SymbolDisplayParameterOptions.IncludeName | SymbolDisplayParameterOptions.IncludeType | SymbolDisplayParameterOptions.IncludeOptionalBrackets | SymbolDisplayParameterOptions.IncludeParamsRefOut,
-                SymbolDisplayPropertyStyle.NameOnly,
-                SymbolDisplayLocalOptions.None,
-                SymbolDisplayKindOptions.None,
-                SymbolDisplayMiscellaneousOptions.None);
-
-            DescriptionFormat = new SymbolDisplayFormat(SymbolDisplayGlobalNamespaceStyle.Omitted,
-                SymbolDisplayTypeQualificationStyle.NameAndContainingTypes,
-                SymbolDisplayGenericsOptions.IncludeTypeParameters,
-                SymbolDisplayMemberOptions.IncludeModifiers | SymbolDisplayMemberOptions.IncludeContainingType | SymbolDisplayMemberOptions.IncludeAccessibility | SymbolDisplayMemberOptions.IncludeConstantValue | SymbolDisplayMemberOptions.IncludeParameters | SymbolDisplayMemberOptions.IncludeType,
-                SymbolDisplayDelegateStyle.NameAndParameters,
-                SymbolDisplayExtensionMethodStyle.InstanceMethod,
-                SymbolDisplayParameterOptions.IncludeName | SymbolDisplayParameterOptions.IncludeType | SymbolDisplayParameterOptions.IncludeOptionalBrackets | SymbolDisplayParameterOptions.IncludeParamsRefOut,
-                SymbolDisplayPropertyStyle.NameOnly,
-                SymbolDisplayLocalOptions.None,
-                SymbolDisplayKindOptions.None,
-                SymbolDisplayMiscellaneousOptions.None);
-
-        }
+        public NamespaceOrTypeSymbolModel NamespaceOrTypeSymbol { get; }
+        public SymbolModel Symbol { get; }
+        public List<SymbolModel> CompletionCandidates { get; }
+        private readonly string _prefix;
 
         public CodeCompleter(Script script)
         {
             var compilation = script.GetCompilation();
-
             var tree = compilation.SyntaxTrees.Single();
-            _position = tree.Length;
-            GetNodes(tree.GetRoot().GetMostSpecificNodeOrTokenAt(tree.Length -1));
-
             var semantics = compilation.GetSemanticModel(tree);
 
-            var contextSymbolInfo = semantics.GetSymbolInfo(_contextNode);
-            var contextTypeInfo = semantics.GetTypeInfo(_contextNode);
+            var nodes = GetNodes(tree.GetRoot().GetMostSpecificNodeOrTokenAt(tree.Length -1));
+            _prefix = nodes.Prefix?.GetText().ToString() ?? "";
+
+            var completion = semantics.GetCompletionSymbols(nodes.Container, compilation.GlobalNamespace);
             
-            var symbols = semantics.LookupSymbols(tree.Length, contextTypeInfo.Type)
-                .Where(s => s.IsStatic == (contextSymbolInfo.Symbol.Kind == SymbolKind.NamedType))
+            var symbols = semantics.LookupSymbols(tree.Length, completion.NamespaceOrType)
+                .Where(s => s.IsStatic == completion.SearchForStatic)
                 .ToList();
 
             _semantics = semantics;
             _symbols = symbols;
 
             var mapper = new SyntaxNodeMapper();
-            ContextNode = mapper.Map(_contextNode);
-            PrefixNode = mapper.Map(_prefixNode);
-            Symbols = symbols.Select(s => new SymbolModel(s)).ToList();
-            ContextSymbolInfo = new SymbolInfoModel(contextSymbolInfo);
-            ContextTypeInfo = new TypeInfoModel(contextTypeInfo);
+
+
+            
+
+            NamespaceOrTypeSymbol = new NamespaceOrTypeSymbolModel(completion.NamespaceOrType);
+            Symbol = completion.Symbol == null ? null : new SymbolModel(completion.Symbol);
+
+            ContainerNode = mapper.Map(nodes.Container);
+            PrefixNode = mapper.Map(nodes.Prefix);
+
+            CompletionCandidates = symbols.Select(s => new SymbolModel(s)).ToList();
         }
 
         public IEnumerable<CompletionData> GetCompletions()
         {
-            var prefix = _prefixNode?.GetText()?.ToString() ?? "";
-            return _symbols.Where(s => s.Name.StartsWith(prefix))
-                .Select(s => new CompletionData(prefix, s.Name.Substring(prefix.Length), $"{s.ToDisplayString(ContentFormat)}", $"{s.ToDisplayString(DescriptionFormat)}"));
+            return _symbols.Where(s => s.Name.StartsWith(_prefix))
+                .Select(s => new CompletionData(_prefix, s.Name.Substring(_prefix.Length), $"{s.ToDisplayString(DisplayFormats.ContentFormat)}", $"{s.ToDisplayString(DisplayFormats.DescriptionFormat)}"));
         }
 
-        private void GetNodes(SyntaxNodeOrToken nodeOrToken)
+        private static CompletionNodes GetNodes(SyntaxNodeOrToken nodeOrToken)
         {
             SyntaxNodeOrToken dot;
+            SyntaxNode prefix = null;
 
             switch (nodeOrToken.Kind())
             {
                 case SyntaxKind.IdentifierName:
-                    _prefixNode = nodeOrToken.AsNode();
+                    prefix = nodeOrToken.AsNode();
                     dot = nodeOrToken.GetPreviousSibling();
                     if (dot.Kind() != SyntaxKind.DotToken)
                     {
-                        return;
+                        return new CompletionNodes(null, prefix);
                     }
                     break;
                 case SyntaxKind.DotToken:
                     dot = nodeOrToken;
                     break;
                 default:
-                    return;
+                    return new CompletionNodes(null, null);
             }
 
             var previous = dot.GetPreviousSibling();
-            if (previous.IsNode)
-            {
-                _contextNode = previous.AsNode();
-            }
+            return previous.IsNode ? new CompletionNodes(previous.AsNode(), prefix) : new CompletionNodes(null, prefix);
+        }
+    }
+
+    public struct CompletionNodes
+    {
+        public SyntaxNode Container { get; }
+        public SyntaxNode Prefix { get; }
+
+        public CompletionNodes(SyntaxNode container, SyntaxNode prefix)
+        {
+            Container = container;
+            Prefix = prefix;
         }
     }
 }

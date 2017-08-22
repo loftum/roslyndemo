@@ -185,6 +185,7 @@
     <Compile Include="ViewModels\CompletionData.cs" />
     <Compile Include="Extensions\TextEditorExtensions.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
+    <Compile Include="ViewModels\DisplayFormats.cs" />
     <Compile Include="ViewModels\Interactive.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\VariableModel.cs" />

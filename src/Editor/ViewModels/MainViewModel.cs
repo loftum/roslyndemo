@@ -1,6 +1,6 @@
-﻿using Convenient.Stuff.Serializers;
+﻿using Convenient.Stuff.Models.Syntax;
+using Convenient.Stuff.Serializers;
 using Convenient.Stuff.Wpf;
-using Editor.Models;
 using Microsoft.CodeAnalysis.CSharp;
 
 namespace Editor.ViewModels

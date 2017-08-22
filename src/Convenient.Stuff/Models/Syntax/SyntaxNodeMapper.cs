@@ -15,6 +15,7 @@ namespace Convenient.Stuff.Models.Syntax
         {
             var model = new SyntaxNodeModel
             {
+                Type = node.GetType().Name,
                 Kind = node.Kind().ToString(),
                 Text = node.GetText().ToString(),
                 ChildNodes = node.ChildNodes().Select(Map).ToList(),

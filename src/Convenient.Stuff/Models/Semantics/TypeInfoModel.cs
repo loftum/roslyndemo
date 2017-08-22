@@ -9,8 +9,8 @@ namespace Convenient.Stuff.Models.Semantics
 
         public TypeInfoModel(TypeInfo typeInfo)
         {
-            TypeSymbol = new TypeSymbolModel(typeInfo.Type);
-            ConvertedType = new TypeSymbolModel(typeInfo.ConvertedType);
+            TypeSymbol = typeInfo.Type == null ? null : new TypeSymbolModel(typeInfo.Type);
+            ConvertedType = typeInfo.ConvertedType == null ? null : new TypeSymbolModel(typeInfo.ConvertedType);
         }
     }
 }

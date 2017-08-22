@@ -20,6 +20,7 @@ namespace Studio.ViewModels
         public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
         {
             textArea.Document.Replace(completionSegment, _completion);
+            
         }
 
         public CompletionData(string prefix, string completion, string content, string description)
