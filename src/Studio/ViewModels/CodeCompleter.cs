@@ -13,8 +13,6 @@ namespace Studio.ViewModels
     {
         private SyntaxNode _contextNode;
         private SyntaxNode _prefixNode;
-        private SymbolInfo _contextInfo;
-        private TypeInfo _contextType;
         private readonly IList<ISymbol> _symbols;
         private readonly SemanticModel _semantics;
         private readonly int _position;
@@ -67,7 +65,6 @@ namespace Studio.ViewModels
             var semantics = compilation.GetSemanticModel(tree);
 
             var contextSymbolInfo = semantics.GetSymbolInfo(_contextNode);
-
             var contextTypeInfo = semantics.GetTypeInfo(_contextNode);
             
             var symbols = semantics.LookupSymbols(tree.Length, contextTypeInfo.Type)
@@ -75,8 +72,6 @@ namespace Studio.ViewModels
                 .ToList();
 
             _semantics = semantics;
-            _contextInfo = contextSymbolInfo;
-            _contextType = contextTypeInfo;
             _symbols = symbols;
 
             var mapper = new SyntaxNodeMapper();
