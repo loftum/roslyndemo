@@ -163,13 +163,15 @@
     <Compile Include="Models\Semantics\NamedTypeSymbolModel.cs" />
     <Compile Include="Models\Semantics\NamespaceOrTypeSymbolModel.cs" />
     <Compile Include="Models\Semantics\SymbolInfoModel.cs" />
+    <Compile Include="Models\Semantics\SymbolMapper.cs" />
     <Compile Include="Models\Semantics\SymbolModel.cs" />
     <Compile Include="Models\Semantics\TypeInfoModel.cs" />
     <Compile Include="Models\Semantics\TypeSymbolModel.cs" />
-    <Compile Include="Models\Syntax\SyntaxNodeMapper.cs" />
+    <Compile Include="Models\Syntax\SyntaxMapper.cs" />
     <Compile Include="Models\Syntax\SyntaxNodeModel.cs" />
     <Compile Include="Models\Syntax\SyntaxTokenModel.cs" />
     <Compile Include="Models\Syntax\SyntaxTreeModel.cs" />
+    <Compile Include="Models\Syntax\SyntaxTriviaModel.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serializers\Json.cs" />

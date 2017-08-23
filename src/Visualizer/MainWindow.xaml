@@ -49,14 +49,41 @@
         </Grid>
         <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Center" VerticalAlignment="Stretch" />
         <Grid Grid.Column="2">
-            <avalonedit:TextEditor Name="Output" BorderThickness="0"
-                    ShowLineNumbers="True"
-                     IsReadOnly="True"
-                     SyntaxHighlighting="Json"
-                     FontFamily="Consolas"
-                     HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+            <TabControl>
+                <TabItem Header="Meta">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0">Syntax</TextBlock>
+                        <avalonedit:TextEditor Grid.Row="1" Name="Syntax" BorderThickness="0"
+                                               ShowLineNumbers="True"
+                                               IsReadOnly="True"
+                                               SyntaxHighlighting="JavaScript"
+                                               FontFamily="Consolas"
+                                               HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+                        <TextBlock Grid.Row="2">Semantics</TextBlock>
+                        <avalonedit:TextEditor Grid.Row="3" Name="Semantics" BorderThickness="0"
+                                               ShowLineNumbers="True"
+                                               IsReadOnly="True"
+                                               SyntaxHighlighting="JavaScript"
+                                               FontFamily="Consolas"
+                                               HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Output">
+                    <avalonedit:TextEditor Name="Output" BorderThickness="0"
+                                           ShowLineNumbers="True"
+                                           IsReadOnly="True"
+                                           SyntaxHighlighting="JavaScript"
+                                           FontFamily="Consolas"
+                                           HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+                </TabItem>
+            </TabControl>
         </Grid>
-        
     </Grid>
 </wpf:MainWindowBase>
 

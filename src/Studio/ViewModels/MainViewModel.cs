@@ -81,12 +81,5 @@ namespace Studio.ViewModels
                 Code = source.ToString();
             }
         }
-
-        private static bool AreEqual(ScriptVariable second, VariableModel first)
-        {
-            return first == null
-                ? second == null
-                : first.Name == second.Name && first.Type == second.Type && first.Value == second.Value;
-        }
     }
 }

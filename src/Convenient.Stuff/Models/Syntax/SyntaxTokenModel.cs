@@ -1,8 +1,9 @@
 ﻿namespace Convenient.Stuff.Models.Syntax
 {
-    public class SyntaxTokenModel
+    public struct SyntaxTokenModel
     {
         public string Kind { get; set; }
         public string Text { get; set; }
+        public bool IsMissing { get; set; }
     }
 }

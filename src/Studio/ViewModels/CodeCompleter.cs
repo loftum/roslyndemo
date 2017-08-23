@@ -5,18 +5,18 @@ using Convenient.Stuff.Models.Syntax;
 using Convenient.Stuff.Syntax;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Scripting;
+using SemanticModel = Microsoft.CodeAnalysis.SemanticModel;
 
 namespace Studio.ViewModels
 {
     public static class CodeCompletionExtensions
     {
-        public static CompletionSymbols GetCompletionSymbols(this SemanticModel semantics, SyntaxNode node, INamespaceOrTypeSymbol defaultValue)
+        public static CompletionSymbols GetCompletionSymbols(this SemanticModel semantics, SyntaxNode node)
         {
             if (node == null)
             {
-                return new CompletionSymbols(defaultValue, null);
+                return semantics.GetDefault();
             }
             var symbolInfo = semantics.GetSymbolInfo(node);
 
@@ -27,16 +27,15 @@ namespace Studio.ViewModels
                 return new CompletionSymbols(namespaceOrType, null);
             }
 
-            var s = node as LiteralExpressionSyntax;
-            
-
-            
-
             var typeInfo = semantics.GetTypeInfo(node);
             var type = typeInfo.ConvertedType ?? typeInfo.Type;
-            return type == null
-                ? new CompletionSymbols(defaultValue, null)
-                : new CompletionSymbols(type, symbol);
+
+            return type != null ? new CompletionSymbols(type, symbol) : semantics.GetDefault();
+        }
+
+        private static CompletionSymbols GetDefault(this SemanticModel semantics)
+        {
+            return new CompletionSymbols(semantics.Compilation.GlobalNamespace, null);
         }
     }
 
@@ -75,8 +74,8 @@ namespace Studio.ViewModels
 
             var nodes = GetNodes(tree.GetRoot().GetMostSpecificNodeOrTokenAt(tree.Length -1));
             _prefix = nodes.Prefix?.GetText().ToString() ?? "";
-
-            var completion = semantics.GetCompletionSymbols(nodes.Container, compilation.GlobalNamespace);
+            
+            var completion = semantics.GetCompletionSymbols(nodes.Container);
             
             var symbols = semantics.LookupSymbols(tree.Length, completion.NamespaceOrType)
                 .Where(s => s.IsStatic == completion.SearchForStatic)
@@ -85,16 +84,11 @@ namespace Studio.ViewModels
             _semantics = semantics;
             _symbols = symbols;
 
-            var mapper = new SyntaxNodeMapper();
-
-
-            
-
             NamespaceOrTypeSymbol = new NamespaceOrTypeSymbolModel(completion.NamespaceOrType);
             Symbol = completion.Symbol == null ? null : new SymbolModel(completion.Symbol);
 
-            ContainerNode = mapper.Map(nodes.Container);
-            PrefixNode = mapper.Map(nodes.Prefix);
+            ContainerNode = SyntaxMapper.Map(nodes.Container);
+            PrefixNode = SyntaxMapper.Map(nodes.Prefix);
 
             CompletionCandidates = symbols.Select(s => new SymbolModel(s)).ToList();
         }
@@ -110,23 +104,24 @@ namespace Studio.ViewModels
             SyntaxNodeOrToken dot;
             SyntaxNode prefix = null;
 
-            switch (nodeOrToken.Kind())
+            if (nodeOrToken.IsNode)
             {
-                case SyntaxKind.IdentifierName:
-                    prefix = nodeOrToken.AsNode();
-                    dot = nodeOrToken.GetPreviousSibling();
-                    if (dot.Kind() != SyntaxKind.DotToken)
-                    {
-                        return new CompletionNodes(null, prefix);
-                    }
-                    break;
-                case SyntaxKind.DotToken:
-                    dot = nodeOrToken;
-                    break;
-                default:
-                    return new CompletionNodes(null, null);
+                prefix = nodeOrToken.AsNode();
+                dot = nodeOrToken.GetPreviousSibling();
+                if (dot.Kind() != SyntaxKind.DotToken)
+                {
+                    return new CompletionNodes(null, prefix);
+                }
             }
-
+            else
+            {
+                if (nodeOrToken.Kind() != SyntaxKind.DotToken)
+                {
+                    return new CompletionNodes(null, prefix);
+                }
+                dot = nodeOrToken;
+            }
+            
             var previous = dot.GetPreviousSibling();
             return previous.IsNode ? new CompletionNodes(previous.AsNode(), prefix) : new CompletionNodes(null, prefix);
         }
