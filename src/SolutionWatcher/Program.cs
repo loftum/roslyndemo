@@ -1,11 +1,14 @@
 ﻿using System;
 using System.CodeDom;
+using System.Composition.Hosting;
+using System.Composition.Hosting.Core;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.MSBuild;
 
 namespace SolutionWatcher
@@ -87,10 +90,22 @@ namespace SolutionWatcher
                 workspace.WorkspaceChanged += WorkspaceChanged;
                 workspace.DocumentOpened += DocumentOpened;
                 workspace.DocumentClosed += DocumentClosed;
-                
-                var solution = await workspace.OpenSolutionAsync(args[0], cancellationToken);
 
-                Console.WriteLine($"Opened {solution.FilePath}");
+                var solution = await workspace.OpenSolutionAsync(args[0], cancellationToken);
+                Console.WriteLine($"Solution: {solution.FilePath} ({solution.Projects.Count()} projects)");
+                
+                foreach (var projectId in solution.ProjectIds)
+                {
+                    var project = solution.GetProject(projectId);
+                    Console.WriteLine($"- Project: {project.Name} ({project.Documents.Count()} documents)");
+                    foreach (var documentId in project.DocumentIds)
+                    {
+                        var document = project.GetDocument(documentId);
+                        Console.WriteLine($"  - Document: {document.Name} ({document.Id.Id})");
+                    }
+                }
+                
+                
                 while (!cancellationToken.IsCancellationRequested)
                 {
                     await Task.Delay(500, cancellationToken);
