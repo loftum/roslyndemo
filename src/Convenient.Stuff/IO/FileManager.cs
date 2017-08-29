@@ -1,12 +1,13 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using Convenient.Stuff.Serializers;
 
 namespace Convenient.Stuff.IO
 {
     public class FileManager
     {
-        private static readonly string BaseFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files");
+        public static readonly string BaseFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files");
 
         static FileManager()
         {
@@ -35,6 +36,12 @@ namespace Convenient.Stuff.IO
         private static string PathFor<T>()
         {
             return Path.Combine(BaseFolder, $"{typeof(T).Name}.json");
+        }
+
+        public string ToFullPath(string part, params string[] parts)
+        {
+            var allParts = new[] {BaseFolder, part}.Concat(parts).ToArray();
+            return Path.Combine(allParts);
         }
     }
 }

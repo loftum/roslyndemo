@@ -38,16 +38,6 @@ namespace Visualizer
             UpdateMeta();
         }
 
-        private void Parse_Click(object sender, RoutedEventArgs e)
-        {
-            Output.Text = Vm.GetTree();
-        }
-
-        private void Compile_Click(object sender, RoutedEventArgs e)
-        {
-            Output.Text = Vm.GetCompilation();
-        }
-
         protected override void OnClosing(CancelEventArgs e)
         {
             _fileManager.SaveJson(new Data
@@ -140,6 +130,21 @@ namespace Visualizer
         private void Input_OnTextChanged(object sender, EventArgs e)
         {
             Vm.Parse(Input.Text);
+        }
+
+        private void Parse_Click(object sender, RoutedEventArgs e)
+        {
+            Output.Text = Vm.GetTree();
+        }
+
+        private void Compile_Click(object sender, RoutedEventArgs e)
+        {
+            Output.Text = Vm.GetCompilation();
+        }
+
+        private void Emit_Click(object sender, RoutedEventArgs e)
+        {
+            Output.Text = Vm.Emit();
         }
     }
 }
