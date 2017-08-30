@@ -7,10 +7,8 @@ using Convenient.Stuff.Models;
 using Convenient.Stuff.Models.Emit;
 using Convenient.Stuff.Models.Semantics;
 using Convenient.Stuff.Models.Syntax;
-using Convenient.Stuff.Serializers;
 using Convenient.Stuff.Syntax;
 using Convenient.Stuff.Wpf;
-using ICSharpCode.AvalonEdit.CodeCompletion;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
