@@ -5,10 +5,8 @@ using Convenient.Stuff.Models.Syntax;
 using Convenient.Stuff.Syntax;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Scripting;
-using SemanticModel = Microsoft.CodeAnalysis.SemanticModel;
 
-namespace Studio.ViewModels
+namespace Convenient.Stuff.Completion
 {
     public static class CodeCompletionExtensions
     {
@@ -56,7 +54,6 @@ namespace Studio.ViewModels
     public class CodeCompleter
     {
         private readonly IList<ISymbol> _symbols;
-        private readonly SemanticModel _semantics;
 
         public SyntaxNodeModel ContainerNode { get; }
         public SyntaxNodeModel PrefixNode { get; }
@@ -66,13 +63,11 @@ namespace Studio.ViewModels
         public List<SymbolModel> CompletionCandidates { get; }
         private readonly string _prefix;
 
-        public CodeCompleter(Script script)
+        public CodeCompleter(SyntaxTree tree, Compilation compilation, int location)
         {
-            var compilation = script.GetCompilation();
-            var tree = compilation.SyntaxTrees.Single();
             var semantics = compilation.GetSemanticModel(tree);
-
-            var nodes = GetNodes(tree.GetRoot().GetMostSpecificNodeOrTokenAt(tree.Length -1));
+            
+            var nodes = GetNodes(tree.GetRoot().GetMostSpecificNodeOrTokenAt(location));
             _prefix = nodes.Prefix?.GetText().ToString() ?? "";
             
             var completion = semantics.GetCompletionSymbols(nodes.Container);
@@ -81,7 +76,6 @@ namespace Studio.ViewModels
                 .Where(s => s.IsStatic == completion.SearchForStatic)
                 .ToList();
 
-            _semantics = semantics;
             _symbols = symbols;
 
             NamespaceOrTypeSymbol = new NamespaceOrTypeSymbolModel(completion.NamespaceOrType);

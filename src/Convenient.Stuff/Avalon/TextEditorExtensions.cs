@@ -1,7 +1,6 @@
 using ICSharpCode.AvalonEdit;
-using Studio.ViewModels;
 
-namespace Studio.Extensions
+namespace Convenient.Stuff.Avalon
 {
     public static class TextEditorExtensions
     {

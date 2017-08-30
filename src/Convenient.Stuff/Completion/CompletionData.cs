@@ -4,7 +4,7 @@ using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 
-namespace Studio.ViewModels
+namespace Convenient.Stuff.Completion
 {
     public class CompletionData : ICompletionData
     {

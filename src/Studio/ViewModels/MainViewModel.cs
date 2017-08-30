@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Convenient.Stuff.Collections;
+using Convenient.Stuff.Completion;
 using Convenient.Stuff.Serializers;
 using Convenient.Stuff.Wpf;
 using Microsoft.CodeAnalysis.CSharp;
@@ -53,7 +55,9 @@ namespace Studio.ViewModels
         {
             var script = _scriptState.Script.ContinueWith(code);
             script.Compile();
-            var completer = new CodeCompleter(script);
+            var compilation = script.GetCompilation();
+            var tree = compilation.SyntaxTrees.Single();
+            var completer = new CodeCompleter(tree, compilation, tree.Length - 1);
             Code = completer.ToJson(true, true);
             return completer.GetCompletions();
         }

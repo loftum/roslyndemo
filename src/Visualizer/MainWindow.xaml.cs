@@ -3,10 +3,13 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using Convenient.Stuff;
+using Convenient.Stuff.Avalon;
+using Convenient.Stuff.Collections;
 using Convenient.Stuff.IO;
 using Convenient.Stuff.Models.Syntax;
 using Convenient.Stuff.Serializers;
 using ICSharpCode.AvalonEdit;
+using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Search;
 using Microsoft.CodeAnalysis.CSharp;
 using Visualizer.ViewModels;
@@ -88,17 +91,15 @@ namespace Visualizer
 
         private void Input_KeyDown(object sender, KeyEventArgs e)
         {
-            //if (e.Key == Key.Space && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
-            //{
-            //    var statement = Input.GetCurrentStatement();
-            //    var completions = Vm.GetCompletions(statement.Text);
-
-            //    var completionWindow = new CompletionWindow(Input.TextArea);
-            //    completionWindow.CompletionList.CompletionData.AddRange(completions);
-            //    completionWindow.Show();
-            //    completionWindow.Closed += (o, ea) => completionWindow = null;
-            //    e.Handled = true;
-            //}
+            if (e.Key == Key.Space && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            {
+                var completions = Vm.GetCompletions(Input.CaretOffset);
+                var completionWindow = new CompletionWindow(Input.TextArea);
+                completionWindow.CompletionList.CompletionData.AddRange(completions);
+                completionWindow.Show();
+                completionWindow.Closed += (o, ea) => completionWindow = null;
+                e.Handled = true;
+            }
             if (e.Key == Key.S && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
                  Save();

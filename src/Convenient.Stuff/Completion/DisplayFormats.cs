@@ -1,6 +1,6 @@
 using Microsoft.CodeAnalysis;
 
-namespace Studio.ViewModels
+namespace Convenient.Stuff.Completion
 {
     public static class DisplayFormats
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Studio.Extensions
+namespace Convenient.Stuff.Collections
 {
     public static class ListExtensions
     {

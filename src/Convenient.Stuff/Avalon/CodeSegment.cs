@@ -1,4 +1,4 @@
-namespace Studio.ViewModels
+namespace Convenient.Stuff.Avalon
 {
     public struct CodeSegment
     {

@@ -183,13 +183,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Extensions\ResultExtensions.cs" />
-    <Compile Include="Extensions\ListExtensions.cs" />
-    <Compile Include="ViewModels\CodeCompleter.cs" />
-    <Compile Include="ViewModels\CodeSegment.cs" />
-    <Compile Include="ViewModels\CompletionData.cs" />
-    <Compile Include="Extensions\TextEditorExtensions.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
-    <Compile Include="ViewModels\DisplayFormats.cs" />
     <Compile Include="ViewModels\Interactive.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\VariableModel.cs" />

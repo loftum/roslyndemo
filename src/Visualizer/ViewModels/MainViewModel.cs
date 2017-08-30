@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Convenient.Stuff.Completion;
 using Convenient.Stuff.IO;
 using Convenient.Stuff.Models;
 using Convenient.Stuff.Models.Emit;
@@ -9,6 +10,7 @@ using Convenient.Stuff.Models.Syntax;
 using Convenient.Stuff.Serializers;
 using Convenient.Stuff.Syntax;
 using Convenient.Stuff.Wpf;
+using ICSharpCode.AvalonEdit.CodeCompletion;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -87,6 +89,12 @@ namespace Visualizer.ViewModels
             result["EnclosingSymbol"] = SymbolMapper.Map(semantics.GetEnclosingSymbol(index));
 
             return result;
+        }
+
+        public IEnumerable<CompletionData> GetCompletions(int location)
+        {
+            var completer = new CodeCompleter(SyntaxTree, Compilation, location);
+            return completer.GetCompletions();
         }
     }
 }

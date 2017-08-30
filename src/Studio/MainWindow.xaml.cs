@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using System.Windows.Input;
 using Convenient.Stuff;
+using Convenient.Stuff.Avalon;
+using Convenient.Stuff.Collections;
 using Convenient.Stuff.ConsoleRedirect;
 using Convenient.Stuff.IO;
 using ICSharpCode.AvalonEdit;
