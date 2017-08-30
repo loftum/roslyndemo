@@ -32,6 +32,7 @@
                                    HorizontalScrollBarVisibility="Auto"
                                    ShowLineNumbers="True"
                                    MouseHover="Input_OnMouseHover"
+                                   KeyDown="Input_KeyDown"
                                    />
             <Grid Grid.Row="1">
                 <WrapPanel>
@@ -42,9 +43,7 @@
             </Grid>
             <Grid Grid.Row="2">
                 <WrapPanel>
-                    <Button Click="Parse_Click">Parse</Button>
-                    <Button Click="Compile_Click">Compile</Button>
-                    <Button Click="Emit_Click">Emit</Button>
+                    <Button Click="Build_Click">Build</Button>
                 </WrapPanel>
             </Grid>
         </Grid>
@@ -75,8 +74,24 @@
                                                HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
                     </Grid>
                 </TabItem>
-                <TabItem Header="Output">
-                    <avalonedit:TextEditor Name="Output" BorderThickness="0"
+                <TabItem Header="SyntaxTree">
+                    <avalonedit:TextEditor Name="SyntaxTree" BorderThickness="0"
+                                           ShowLineNumbers="True"
+                                           IsReadOnly="True"
+                                           SyntaxHighlighting="JavaScript"
+                                           FontFamily="Consolas"
+                                           HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+                </TabItem>
+                <TabItem Header="Compilation">
+                    <avalonedit:TextEditor Name="Compilation" BorderThickness="0"
+                                           ShowLineNumbers="True"
+                                           IsReadOnly="True"
+                                           SyntaxHighlighting="JavaScript"
+                                           FontFamily="Consolas"
+                                           HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+                </TabItem>
+                <TabItem Header="Emit">
+                    <avalonedit:TextEditor Name="EmitResult" BorderThickness="0"
                                            ShowLineNumbers="True"
                                            IsReadOnly="True"
                                            SyntaxHighlighting="JavaScript"

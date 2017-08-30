@@ -20,5 +20,10 @@ namespace Convenient.Stuff.Models.Syntax
             ChildNodes = new List<SyntaxNodeModel>();
             ChildTokens = new List<SyntaxTokenModel>();
         }
+
+        public override string ToString()
+        {
+            return $"{Kind} {Text}";
+        }
     }
 }

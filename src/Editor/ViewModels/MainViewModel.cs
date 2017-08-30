@@ -23,7 +23,7 @@ namespace Editor.ViewModels
         {
             var tree = CSharpSyntaxTree.ParseText(inputText);
             
-            SyntaxTree = new SyntaxTreeModel(tree).ToJson(true, true);
+            SyntaxTree = SyntaxMapper.Map(tree).ToJson(true, true);
         }
     }
 }

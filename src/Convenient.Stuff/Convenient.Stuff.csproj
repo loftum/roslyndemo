@@ -160,7 +160,11 @@
     <Compile Include="ConsoleRedirect\Dispatchable.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="IO\FileManager.cs" />
+    <Compile Include="Models\CompilationMapper.cs" />
+    <Compile Include="Models\CSharpCompilationModel.cs" />
+    <Compile Include="Models\DiagnosticModel.cs" />
     <Compile Include="Models\Emit\EmitResultModel.cs" />
+    <Compile Include="Models\MetadataReferencesModel.cs" />
     <Compile Include="Models\Semantics\NamedTypeSymbolModel.cs" />
     <Compile Include="Models\Semantics\NamespaceOrTypeSymbolModel.cs" />
     <Compile Include="Models\Semantics\SymbolInfoModel.cs" />
@@ -189,6 +193,7 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

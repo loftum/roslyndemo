@@ -6,6 +6,15 @@ namespace Convenient.Stuff.Models.Syntax
 {
     public class SyntaxMapper
     {
+        public static SyntaxTreeModel Map(SyntaxTree tree)
+        {
+            return new SyntaxTreeModel
+            {
+                Tree = tree,
+                Root = Map(tree.GetRoot())
+            };
+        }
+
         public static object Map(SyntaxNodeOrToken nodeOrToken)
         {
             return nodeOrToken.IsNode ? (object)Map(nodeOrToken.AsNode()) : Map(nodeOrToken.AsToken());

@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Convenient.Stuff;
 using Convenient.Stuff.IO;
-using Convenient.Stuff.Models.Semantics;
 using Convenient.Stuff.Models.Syntax;
 using Convenient.Stuff.Serializers;
-using Convenient.Stuff.Syntax;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Search;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Visualizer.ViewModels;
 
@@ -27,8 +22,9 @@ namespace Visualizer
         {
             InitializeComponent();
             SearchPanel.Install(Input);
-            SearchPanel.Install(Output);
+            SearchPanel.Install(EmitResult);
             UpdateMeta();
+            Parse();
             Input.TextArea.Caret.PositionChanged += CaretOnPositionChanged;
             Input.Focus();
         }
@@ -40,11 +36,7 @@ namespace Visualizer
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            _fileManager.SaveJson(new Data
-            {
-                Input = Input.Text
-            });
-
+            Save();
             base.OnClosing(e);
         }
 
@@ -88,63 +80,63 @@ namespace Visualizer
 
         private void ShowMetaAt(int index)
         {
-            var tree = CSharpSyntaxTree.ParseText(Input.Text);
-            SyntaxNode root;
-            if (!tree.TryGetRoot(out root))
-            {
-                return;
-            }
-            var nodeOrToken = root.GetMostSpecificNodeOrTokenAt(index);
-
-            Meta.Text = $"{nodeOrToken.Kind()} {nodeOrToken}";
-            Syntax.Text = SyntaxMapper.Map(nodeOrToken).ToJson(true, true);
-            Semantics.Text = GetSemantics(nodeOrToken, index).ToJson(true, true);
+            var meta = Vm.GetMetaAt(index);
+            Meta.Text = $"{meta.SyntaxNodeOrToken.Kind()} {meta.SyntaxNodeOrToken}";
+            Syntax.Text = SyntaxMapper.Map(meta.SyntaxNodeOrToken).ToJson(true, true);
+            Semantics.Text = meta.Semantics?.ToJson(true, true);
         }
 
-        private static readonly IList<MetadataReference> References;
-
-        static MainWindow()
+        private void Input_KeyDown(object sender, KeyEventArgs e)
         {
-            References = AppDomain.CurrentDomain.GetAssemblies()
-                .Select(a => MetadataReference.CreateFromFile(a.Location))
-                .ToArray();
+            //if (e.Key == Key.Space && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            //{
+            //    var statement = Input.GetCurrentStatement();
+            //    var completions = Vm.GetCompletions(statement.Text);
+
+            //    var completionWindow = new CompletionWindow(Input.TextArea);
+            //    completionWindow.CompletionList.CompletionData.AddRange(completions);
+            //    completionWindow.Show();
+            //    completionWindow.Closed += (o, ea) => completionWindow = null;
+            //    e.Handled = true;
+            //}
+            if (e.Key == Key.S && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            {
+                 Save();
+            }
+            else if (e.Key == Key.B && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            {
+                Build();
+            }
         }
 
-        private static Dictionary<string, object> GetSemantics(SyntaxNodeOrToken nodeOrToken, int index)
+        private void Save()
         {
-            var semantics = CSharpCompilation.Create("hest", new[] { nodeOrToken.SyntaxTree }, References, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
-                .GetSemanticModel(nodeOrToken.SyntaxTree);
-
-            var result = new Dictionary<string, object>();
-            var node = nodeOrToken.AsNode();
-            if (node != null)
+            _fileManager.SaveJson(new Data
             {
-                result["TypeInfo"] = SymbolMapper.Map(semantics.GetTypeInfo(node));
-                result["SymbolInfo"] = SymbolMapper.Map(semantics.GetSymbolInfo(node));
-            }
-            result["EnclosingSymbol"] = SymbolMapper.Map(semantics.GetEnclosingSymbol(index));
-
-            return result;
+                Input = Input.Text
+            });
         }
 
         private void Input_OnTextChanged(object sender, EventArgs e)
         {
+            Parse();
+        }
+
+        private void Parse()
+        {
             Vm.Parse(Input.Text);
+            SyntaxTree.Text = Vm.GetTreeModel().ToJson(true, true);
+            Compilation.Text = Vm.GetCompilationModel().ToJson(true, true);
         }
 
-        private void Parse_Click(object sender, RoutedEventArgs e)
+        private void Build_Click(object sender, RoutedEventArgs e)
         {
-            Output.Text = Vm.GetTree();
+            Build();
         }
 
-        private void Compile_Click(object sender, RoutedEventArgs e)
+        private void Build()
         {
-            Output.Text = Vm.GetCompilation();
-        }
-
-        private void Emit_Click(object sender, RoutedEventArgs e)
-        {
-            Output.Text = Vm.Emit();
+            EmitResult.Text = Vm.Emit().ToJson(true, true);
         }
     }
 }
