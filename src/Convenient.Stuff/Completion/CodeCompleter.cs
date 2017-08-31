@@ -90,7 +90,11 @@ namespace Convenient.Stuff.Completion
         public IEnumerable<CompletionData> GetCompletions()
         {
             return _symbols.Where(s => s.Name.StartsWith(_prefix))
-                .Select(s => new CompletionData(_prefix, s.Name.Substring(_prefix.Length), $"{s.ToDisplayString(DisplayFormats.ContentFormat)}", $"{s.ToDisplayString(DisplayFormats.DescriptionFormat)}"));
+                .Select(s => new CompletionData(_prefix,
+                s.ToDisplayString(DisplayFormats.CompletionFormat).Substring(_prefix.Length),
+                s.ToDisplayString(DisplayFormats.ContentFormat),
+                s.ToDisplayString(DisplayFormats.DescriptionFormat))
+                );
         }
 
         private static CompletionNodes GetNodes(SyntaxNodeOrToken nodeOrToken)
