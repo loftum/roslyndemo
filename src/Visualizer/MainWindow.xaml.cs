@@ -27,8 +27,9 @@ namespace Visualizer
             SearchPanel.Install(SyntaxTree);
             SearchPanel.Install(Compilation);
             SearchPanel.Install(EmitResult);
-            UpdateMeta();
             Parse();
+            UpdateMeta();
+            
             Input.TextArea.Caret.PositionChanged += CaretOnPositionChanged;
             Input.Focus();
         }
