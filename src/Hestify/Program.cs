@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using Hestify.Core;
 
 namespace Hestify
 {
@@ -25,7 +26,9 @@ namespace Hestify
                     };
                     try
                     {
-                        Hestifier.Run(args[0], source.Token).Wait(source.Token);
+                        var sln = args[0];
+                        var remove = args.Length > 1 && args[1].StartsWith("-r");
+                        Hestification.Run(sln, remove, source.Token).Wait(source.Token);
                         Console.WriteLine("Bye!");
                     }
                     catch (OperationCanceledException e)
@@ -61,7 +64,7 @@ namespace Hestify
 
         private static void PrintUsage()
         {
-            Console.WriteLine($"{Process.GetCurrentProcess().ProcessName} <solution.sln>");
+            Console.WriteLine($"{Process.GetCurrentProcess().ProcessName} <solution.sln> [-r(evert)]");
         }
     }
 }

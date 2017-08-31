@@ -4,32 +4,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.MSBuild;
 
-namespace Hestify
+namespace Hestify.Core
 {
-    using static SyntaxFactory;
-    public class Hestifier : CSharpSyntaxRewriter
+    public class Hestification
     {
-        public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
-        {
-            Console.WriteLine($"Class {node.Identifier.ValueText}");
-            var attributes = node.AttributeLists.SelectMany(l => l.Attributes);
-            if (attributes.Any(a => a.Name.GetText().ToString() == "Hest"))
-            {
-                return node;
-            }
-            Console.WriteLine("Adding [Hest]");
-            node = node.WithAttributeLists(node.AttributeLists.Add(
-                AttributeList(SingletonSeparatedList<AttributeSyntax>(Attribute(IdentifierName("Hest"))))
-                .WithLeadingTrivia(node.GetLeadingTrivia())
-                .WithTrailingTrivia(CarriageReturn, LineFeed))
-            );
-            return node;
-        }
-
-        public static async Task Run(string sln, CancellationToken cancellationToken)
+        public static async Task Run(string sln, bool revert, CancellationToken cancellationToken)
         {
             Console.WriteLine($"Hestifying {sln}");
             using (var workspace = MSBuildWorkspace.Create())
@@ -41,7 +22,7 @@ namespace Hestify
                 var solution = await workspace.OpenSolutionAsync(sln, cancellationToken);
                 Console.WriteLine($"Solution: {solution.FilePath} ({solution.Projects.Count()} projects)");
 
-                var hestifier = new Hestifier();
+                var hestifier = revert ? (CSharpSyntaxRewriter) new Dehestifier() : new Hestifier();
                 foreach (var projectId in solution.ProjectIds)
                 {
                     var project = solution.GetProject(projectId);

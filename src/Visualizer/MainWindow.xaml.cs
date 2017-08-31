@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using Convenient.Stuff;
-using Convenient.Stuff.Avalon;
 using Convenient.Stuff.Collections;
 using Convenient.Stuff.IO;
 using Convenient.Stuff.Models.Syntax;
@@ -25,6 +24,8 @@ namespace Visualizer
         {
             InitializeComponent();
             SearchPanel.Install(Input);
+            SearchPanel.Install(SyntaxTree);
+            SearchPanel.Install(Compilation);
             SearchPanel.Install(EmitResult);
             UpdateMeta();
             Parse();
