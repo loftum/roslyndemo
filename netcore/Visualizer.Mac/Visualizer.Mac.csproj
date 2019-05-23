@@ -86,5 +86,11 @@
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RoslynDemo.Core\RoslynDemo.Core.csproj">
+      <Project>{E4C7CCB1-25ED-4EC0-A2F5-2E87EE3429A1}</Project>
+      <Name>RoslynDemo.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
 </Project>
