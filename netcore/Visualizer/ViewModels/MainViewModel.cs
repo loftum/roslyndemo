@@ -89,7 +89,8 @@ namespace Visualizer.ViewModels
         public static Dictionary<string, object> Generate()
         {
             var version = "2.2.0";// Environment.Version;
-            
+            //var version = Environment.Version;
+
             return new Dictionary<string, object>
             {
                 ["runtimeOptions"] = new Dictionary<string, object>
