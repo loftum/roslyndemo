@@ -1,4 +1,5 @@
 ﻿using AppKit;
+using RoslynDemo.Core.Models.Syntax;
 
 namespace Visualizer.Mac
 {
