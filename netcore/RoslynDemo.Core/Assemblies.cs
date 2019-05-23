@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace Visualizer.ViewModels
+namespace RoslynDemo.Core
 {
     public static class Assemblies
     {
