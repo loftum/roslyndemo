@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using RoslynDemo.Core;
 using RoslynDemo.Core.IO;
 using RoslynDemo.Core.Models;
 using RoslynDemo.Core.Models.Emit;
