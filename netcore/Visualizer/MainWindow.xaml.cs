@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
-using System.Windows.Documents;
 using System.Windows.Input;
 using Convenient.Stuff;
 using ICSharpCode.AvalonEdit.CodeCompletion;

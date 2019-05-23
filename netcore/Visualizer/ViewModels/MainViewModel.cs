@@ -16,7 +16,7 @@ namespace Visualizer.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        private readonly FileManager _fileManager = new FileManager();
+        private readonly FileManager _fileManager = new FileManager("out");
 
         public SyntaxTree SyntaxTree { get; private set; }
         public CSharpCompilation Compilation { get; private set; }
@@ -24,8 +24,7 @@ namespace Visualizer.ViewModels
         public void Parse(string input)
         {
             SyntaxTree = CSharpSyntaxTree.ParseText(input, CSharpParseOptions.Default);
-            Compilation = CSharpCompilation.Create("hest", new[] { SyntaxTree }, References);
-
+            Compilation = CSharpCompilation.Create("hest", new[] { SyntaxTree }, References, new CSharpCompilationOptions(OutputKind.ConsoleApplication));
         }
 
         public SyntaxTreeModel GetTreeModel()
@@ -33,10 +32,10 @@ namespace Visualizer.ViewModels
             return SyntaxMapper.Map(SyntaxTree);
         }
 
-        private static readonly PortableExecutableReference[] References = AppDomain.CurrentDomain.GetAssemblies()
-            .Where(a => !a.IsDynamic && !string.IsNullOrEmpty(a.Location))
-            .Select(a => MetadataReference.CreateFromFile(a.Location))
-            .ToArray();
+        private static readonly IEnumerable<PortableExecutableReference> References = Assemblies.FromCurrentContext()
+            .Append(typeof(Console).Assembly)
+            .Append(typeof(object).Assembly)
+            .Select(a => MetadataReference.CreateFromFile(a.Location));
 
         public CSharpCompilationModel GetCompilationModel()
         {
@@ -45,14 +44,15 @@ namespace Visualizer.ViewModels
 
         public EmitResultModel Emit()
         {
-            var result = Compilation.Emit(_fileManager.ToFullPath("program.exe"), _fileManager.ToFullPath("program.pdb"));
+            _fileManager.CleanFolder();
+            var result = Compilation.Emit(_fileManager.ToFullPath("program.dll"), _fileManager.ToFullPath("program.pdb"));
+            _fileManager.SaveJson(RuntimeConfig.Generate(), "program.runtimeconfig.json");
             return CompilationMapper.Map(result);
         }
 
         public SyntaxMeta GetMetaAt(int index)
         {
-            SyntaxNode root;
-            if (!SyntaxTree.TryGetRoot(out root))
+            if (!SyntaxTree.TryGetRoot(out var root))
             {
                 return SyntaxMeta.Empty;
             }
@@ -81,6 +81,27 @@ namespace Visualizer.ViewModels
         {
             var completer = new CodeCompleter(SyntaxTree, Compilation, location);
             return completer.GetCompletions();
+        }
+    }
+
+    public static class RuntimeConfig
+    {
+        public static Dictionary<string, object> Generate()
+        {
+            var version = "2.2.0";// Environment.Version;
+            
+            return new Dictionary<string, object>
+            {
+                ["runtimeOptions"] = new Dictionary<string, object>
+                {
+                    ["tfm"] = $"netcoreapp{version}",
+                    ["framework"] = new Dictionary<string, object>
+                    {
+                        ["name"] = "Microsoft.NETCore.App",
+                        ["version"] = $"{version}"
+                    }
+                }
+            };
         }
     }
 }

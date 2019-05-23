@@ -7,10 +7,15 @@ namespace RoslynDemo.Core.IO
 {
     public class FileManager
     {
-        public static readonly string BaseFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files");
+        public string BaseFolder { get; }
 
-        static FileManager()
+        public FileManager() : this("Files")
         {
+        }
+
+        public FileManager(string folder)
+        {
+            BaseFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, folder);
             if (!Directory.Exists(BaseFolder))
             {
                 Directory.CreateDirectory(BaseFolder);
@@ -23,17 +28,19 @@ namespace RoslynDemo.Core.IO
             File.WriteAllText(path, item.ToJson());
         }
 
+        public void SaveJson<T>(T item, string filename)
+        {
+            var path = ToFullPath(filename);
+            File.WriteAllText(path, item.ToJson());
+        }
+
         public T LoadJson<T>()
         {
             var path = PathFor<T>();
-            if (!File.Exists(path))
-            {
-                return default(T);
-            }
-            return Json.Deserialize<T>(File.ReadAllText(path));
+            return !File.Exists(path) ? default : Json.Deserialize<T>(File.ReadAllText(path));
         }
 
-        private static string PathFor<T>()
+        private string PathFor<T>()
         {
             return Path.Combine(BaseFolder, $"{typeof(T).Name}.json");
         }
@@ -42,6 +49,19 @@ namespace RoslynDemo.Core.IO
         {
             var allParts = new[] {BaseFolder, part}.Concat(parts).ToArray();
             return Path.Combine(allParts);
+        }
+
+        public void CleanFolder()
+        {
+            foreach (var file in Directory.EnumerateFiles(BaseFolder))
+            {
+                File.Delete(file);
+            }
+
+            foreach (var sub in Directory.EnumerateDirectories(BaseFolder))
+            {
+                Directory.Delete(sub, true);
+            }
         }
     }
 }
