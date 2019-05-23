@@ -37,7 +37,7 @@ namespace RoslynDemo.Core.IO
         public T LoadJson<T>()
         {
             var path = PathFor<T>();
-            return !File.Exists(path) ? default : Json.Deserialize<T>(File.ReadAllText(path));
+            return !File.Exists(path) ? default(T) : Json.Deserialize<T>(File.ReadAllText(path));
         }
 
         private string PathFor<T>()
