@@ -1,0 +1,107 @@
+﻿<wpf1:MainWindowBase x:Class="Visualizer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Visualizer"
+        xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
+        xmlns:viewModels="clr-namespace:Visualizer.ViewModels"
+        
+        xmlns:wpf1="clr-namespace:Visualizer.Wpf"
+        mc:Ignorable="d"
+        Title="Visualizer" Height="350" Width="525">
+    <Window.DataContext>
+        <viewModels:MainViewModel/>
+    </Window.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <avalonedit:TextEditor Name="Input" Grid.Row="0"
+                                   TextChanged="Input_OnTextChanged"
+                                   FontFamily="Consolas"
+                                   SyntaxHighlighting="C#"
+                                   VerticalScrollBarVisibility="Auto"
+                                   HorizontalScrollBarVisibility="Auto"
+                                   ShowLineNumbers="True"
+                                   MouseHover="Input_OnMouseHover"
+                                   KeyDown="Input_KeyDown"
+                                   />
+            <Grid Grid.Row="1">
+                <WrapPanel>
+                    <TextBox Name="Caret" IsReadOnly="True" FontFamily="Consolas"/>
+                    <TextBox Name="Meta" IsReadOnly="True" FontFamily="Consolas"/>
+                </WrapPanel>
+
+            </Grid>
+            <Grid Grid.Row="2">
+                <WrapPanel>
+                    <Button Click="Build_Click">Build</Button>
+                </WrapPanel>
+            </Grid>
+        </Grid>
+        <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Center" VerticalAlignment="Stretch" />
+        <Grid Grid.Column="2">
+            <TabControl>
+                <TabItem Header="Meta">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0">Syntax</TextBlock>
+                        <avalonedit:TextEditor Grid.Row="1" Name="Syntax" BorderThickness="0"
+                                               ShowLineNumbers="True"
+                                               IsReadOnly="True"
+                                               SyntaxHighlighting="JavaScript"
+                                               FontFamily="Consolas"
+                                               HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+                        <TextBlock Grid.Row="2">Semantics</TextBlock>
+                        <avalonedit:TextEditor Grid.Row="3" Name="Semantics" BorderThickness="0"
+                                               ShowLineNumbers="True"
+                                               IsReadOnly="True"
+                                               SyntaxHighlighting="JavaScript"
+                                               FontFamily="Consolas"
+                                               HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="SyntaxTree">
+                    <avalonedit:TextEditor Name="SyntaxTree" BorderThickness="0"
+                                           ShowLineNumbers="True"
+                                           IsReadOnly="True"
+                                           SyntaxHighlighting="JavaScript"
+                                           FontFamily="Consolas"
+                                           HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+                </TabItem>
+                <TabItem Header="Compilation">
+                    <avalonedit:TextEditor Name="Compilation" BorderThickness="0"
+                                           ShowLineNumbers="True"
+                                           IsReadOnly="True"
+                                           SyntaxHighlighting="JavaScript"
+                                           FontFamily="Consolas"
+                                           HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+                </TabItem>
+                <TabItem Header="Emit">
+                    <avalonedit:TextEditor Name="EmitResult" BorderThickness="0"
+                                           ShowLineNumbers="True"
+                                           IsReadOnly="True"
+                                           SyntaxHighlighting="JavaScript"
+                                           FontFamily="Consolas"
+                                           HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </Grid>
+</wpf1:MainWindowBase>
+
+

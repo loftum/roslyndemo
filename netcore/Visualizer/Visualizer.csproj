@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Wpf\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AvalonEdit" Version="5.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RoslynDemo.Core\RoslynDemo.Core.csproj" />
+  </ItemGroup>
+
+</Project>
