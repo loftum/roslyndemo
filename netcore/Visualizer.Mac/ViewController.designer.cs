@@ -13,7 +13,19 @@ namespace Visualizer.Mac
 	partial class ViewController
 	{
 		[Outlet]
+		AppKit.NSTextView CompilationBox { get; set; }
+
+		[Outlet]
+		AppKit.NSTextView EmitBox { get; set; }
+
+		[Outlet]
 		AppKit.NSTextView InputBox { get; set; }
+
+		[Outlet]
+		AppKit.NSTextView SemanticsBox { get; set; }
+
+		[Outlet]
+		AppKit.NSTextView SyntaxBox { get; set; }
 
 		[Outlet]
 		AppKit.NSTextView SyntaxTreeBox { get; set; }
@@ -28,6 +40,26 @@ namespace Visualizer.Mac
 			if (SyntaxTreeBox != null) {
 				SyntaxTreeBox.Dispose ();
 				SyntaxTreeBox = null;
+			}
+
+			if (CompilationBox != null) {
+				CompilationBox.Dispose ();
+				CompilationBox = null;
+			}
+
+			if (EmitBox != null) {
+				EmitBox.Dispose ();
+				EmitBox = null;
+			}
+
+			if (SyntaxBox != null) {
+				SyntaxBox.Dispose ();
+				SyntaxBox = null;
+			}
+
+			if (SemanticsBox != null) {
+				SemanticsBox.Dispose ();
+				SemanticsBox = null;
 			}
 		}
 	}

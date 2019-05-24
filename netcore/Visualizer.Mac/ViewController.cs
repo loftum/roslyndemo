@@ -8,51 +8,64 @@ using Foundation;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using RoslynDemo.Core;
+using RoslynDemo.Core.Models;
 using RoslynDemo.Core.Models.Syntax;
 using RoslynDemo.Core.Serializers;
 
 namespace Visualizer.Mac
 {
-    public class Locked<T>
-    {
-        private readonly object _lock = new object();
-        private T _value;
-
-        public T Get()
-        {
-            lock(_lock)
-            {
-                return _value;
-            }
-        }
-
-        public void Set(T value)
-        {
-            lock(_lock)
-            {
-                _value = value;
-            }
-        }
-
-        public static implicit operator T (Locked<T> locked)
-        {
-            return locked.Get();
-        }
-
-    }
-
     public partial class ViewController : NSViewController
     {
         private string _syntaxTreeText;
-        [Export("SyntaxTreeText")]
+        private string _compilationText;
+        private string _syntaxText;
+        private string _semanticsText;
+
+        [Export(nameof(SyntaxTreeText))]
         public string SyntaxTreeText
         {
             get => _syntaxTreeText;
             set
             {
-                WillChangeValue("SyntaxTreeText");
+                WillChangeValue(nameof(SyntaxTreeText));
                 _syntaxTreeText = value;
-                DidChangeValue("SyntaxTreeText");
+                DidChangeValue(nameof(SyntaxTreeText));
+            }
+        }
+
+        [Export(nameof(CompilationText))]
+        public string CompilationText
+        {
+            get => _compilationText;
+            set
+            {
+                WillChangeValue(nameof(CompilationText));
+                _compilationText = value;
+                DidChangeValue(nameof(CompilationText));
+            }
+        }
+
+        [Export(nameof(SyntaxText))]
+        public string SyntaxText
+        {
+            get => _syntaxText;
+            set
+            {
+                WillChangeValue(nameof(SyntaxText));
+                _syntaxText = value;
+                DidChangeValue(nameof(SyntaxText));
+            }
+        }
+
+        [Export(nameof(SemanticsText))]
+        public string SemanticsText
+        {
+            get => _semanticsText;
+            set
+            {
+                WillChangeValue(nameof(SemanticsText));
+                _semanticsText = value;
+                DidChangeValue(nameof(SemanticsText));
             }
         }
 
@@ -98,8 +111,23 @@ namespace Visualizer.Mac
         {
             base.ViewDidLoad();
             _parser.Start();
+            var font = NSFont.FromFontName("Monaco", 12);
+            InputBox.Font = font;
+            SyntaxTreeBox.Font = font;
+            CompilationBox.Font = font;
+            EmitBox.Font = font;
+            SyntaxBox.Font = font;
+            SemanticsBox.Font = font;
             InputBox.TextDidChange += Parse;
+            InputBox.DidChangeSelection += UpdateMeta;
             // Do any additional setup after loading the view.
+        }
+
+        private void UpdateMeta(object sender, EventArgs e)
+        {
+            var range = InputBox.SelectedRange;
+
+
         }
 
         private void DoParse()
@@ -121,8 +149,13 @@ namespace Visualizer.Mac
                 Console.WriteLine($"Parsing {input}");
                 SyntaxTree = CSharpSyntaxTree.ParseText(input);
                 Compilation = CSharpCompilation.Create("hest", new[] { SyntaxTree }, References, new CSharpCompilationOptions(OutputKind.ConsoleApplication));
-                var treeModel = SyntaxMapper.Map(SyntaxTree);
-                InvokeOnMainThread(() => SyntaxTreeText = treeModel.ToJson(true, true));
+                var tree = SyntaxMapper.Map(SyntaxTree).ToJson(true, true);
+                var compilation = CompilationMapper.Map(Compilation).ToJson(true, true);
+                InvokeOnMainThread(() =>
+                {
+                    SyntaxTreeText = tree;
+                    CompilationText = compilation;
+                });
             }
         }
 
