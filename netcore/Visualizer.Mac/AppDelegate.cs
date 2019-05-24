@@ -6,6 +6,8 @@ namespace Visualizer.Mac
     [Register("AppDelegate")]
     public class AppDelegate : NSApplicationDelegate
     {
+        private readonly NSFileManager _fileManager = new NSFileManager();
+
         public AppDelegate()
         {
         }
@@ -13,6 +15,7 @@ namespace Visualizer.Mac
         public override void DidFinishLaunching(NSNotification notification)
         {
             // Insert code here to initialize your application
+
         }
 
         public override void WillTerminate(NSNotification notification)

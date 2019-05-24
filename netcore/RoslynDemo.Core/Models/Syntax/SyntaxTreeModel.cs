@@ -6,5 +6,5 @@ namespace RoslynDemo.Core.Models.Syntax
     {
         public SyntaxTree Tree { get; set; }
         public SyntaxNodeModel Root { get; set; }
-    }
+}
 }
