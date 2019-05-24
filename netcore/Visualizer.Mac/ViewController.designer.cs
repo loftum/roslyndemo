@@ -14,12 +14,20 @@ namespace Visualizer.Mac
 	{
 		[Outlet]
 		AppKit.NSTextView InputBox { get; set; }
+
+		[Outlet]
+		AppKit.NSTextView SyntaxTreeBox { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
 			if (InputBox != null) {
 				InputBox.Dispose ();
 				InputBox = null;
+			}
+
+			if (SyntaxTreeBox != null) {
+				SyntaxTreeBox.Dispose ();
+				SyntaxTreeBox = null;
 			}
 		}
 	}
