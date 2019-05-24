@@ -98,9 +98,13 @@ namespace Visualizer.Mac
             .Append(typeof(object).Assembly)
             .Select(a => MetadataReference.CreateFromFile(a.Location));
 
+        private readonly Locked<VisualizerModel> _m = new Locked<VisualizerModel>();
 
-        public SyntaxTree SyntaxTree { get; private set; }
-        public CSharpCompilation Compilation { get; private set; }
+        public VisualizerModel Model
+        {
+            get => _m.Get();
+            set => _m.Set(value);
+        }
 
         public ViewController(IntPtr handle) : base(handle)
         {
@@ -126,8 +130,19 @@ namespace Visualizer.Mac
         private void UpdateMeta(object sender, EventArgs e)
         {
             var range = InputBox.SelectedRange;
+            if (Model == null || Model.SyntaxTree.Length < range.Location)
+            {
+                return;
+            }
 
-
+            var meta = Model.GetMetaAt((int)range.Location);
+            var syntax = SyntaxMapper.Map(meta.SyntaxNodeOrToken).ToJson(true, true);
+            var semantics = meta.Semantics?.ToJson(true, true);
+            InvokeOnMainThread(() =>
+            {
+                SyntaxText = syntax;
+                SemanticsText = semantics;
+            });
         }
 
         private void DoParse()
@@ -147,10 +162,9 @@ namespace Visualizer.Mac
 
                 var input = InputText;
                 Console.WriteLine($"Parsing {input}");
-                SyntaxTree = CSharpSyntaxTree.ParseText(input);
-                Compilation = CSharpCompilation.Create("hest", new[] { SyntaxTree }, References, new CSharpCompilationOptions(OutputKind.ConsoleApplication));
-                var tree = SyntaxMapper.Map(SyntaxTree).ToJson(true, true);
-                var compilation = CompilationMapper.Map(Compilation).ToJson(true, true);
+                Model = VisualizerModel.Parse(input);
+                var tree = SyntaxMapper.Map(Model.SyntaxTree).ToJson(true, true);
+                var compilation = CompilationMapper.Map(Model.Compilation).ToJson(true, true);
                 InvokeOnMainThread(() =>
                 {
                     SyntaxTreeText = tree;
@@ -163,7 +177,7 @@ namespace Visualizer.Mac
         {
             InputText = InputBox.Value;
             ShouldParse = true;
-            ParseAt = DateTimeOffset.UtcNow.AddMilliseconds(300);
+            ParseAt = DateTimeOffset.UtcNow.AddMilliseconds(100);
         }
 
         public override NSObject RepresentedObject

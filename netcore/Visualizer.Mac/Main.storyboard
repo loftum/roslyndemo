@@ -765,7 +765,7 @@
                                                                 </scrollView>
                                                                 <splitView fixedFrame="YES" arrangesAllSubviews="NO" dividerStyle="paneSplitter" translatesAutoresizingMaskIntoConstraints="NO" id="GB7-IR-gR6">
                                                                     <rect key="frame" x="-3" y="-3" width="280" height="322"/>
-                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <customView fixedFrame="YES" id="MDr-fS-hD2">
                                                                             <rect key="frame" x="0.0" y="0.0" width="280" height="152"/>
