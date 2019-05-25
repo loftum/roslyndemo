@@ -238,6 +238,11 @@ namespace Visualizer.Mac
             ParseAt = DateTimeOffset.UtcNow.AddMilliseconds(100);
         }
 
+        public void Emit()
+        {
+
+        }
+
         //public override NSObject RepresentedObject
         //{
         //    get

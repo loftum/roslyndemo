@@ -29,6 +29,9 @@ namespace Visualizer.Mac
 
 		[Outlet]
 		AppKit.NSTextView SyntaxTreeBox { get; set; }
+
+		[Action ("Emit:")]
+		partial void Emit (Foundation.NSObject sender);
 		
 		void ReleaseDesignerOutlets ()
 		{
