@@ -14,12 +14,56 @@ using RoslynDemo.Core.Serializers;
 
 namespace Visualizer.Mac
 {
+    public static class TextViewExtensions
+    {
+        public static CaretPosition GetCaretPosition(this NSTextView view)
+        {
+            var range = view.GetSelectedRange();
+            var text = view.Value;
+            var location = (int)range.Location;
+            var row = 1;
+            var column = 1;
+            for(var ii=0; ii<location; ii++)
+            {
+                switch (text[ii])
+                {
+                    case '\n':
+                        row++;
+                        column = 1;
+                        break;
+                    case '\r':
+                        break;
+                    default:
+                        column++;
+                        break;
+                }
+            }
+            return new CaretPosition(location, row, column);
+        }
+    }
+
+    public struct CaretPosition
+    {
+        public int Location { get; }
+        public int Row { get; }
+        public int Column { get; }
+
+        public CaretPosition(int location, int row, int column)
+        {
+            Location = location;
+            Row = row;
+            Column = column;
+        }
+    }
+
+
     public partial class ViewController : NSViewController
     {
         private string _syntaxTreeText;
         private string _compilationText;
         private string _syntaxText;
         private string _semanticsText;
+        private string caretText;
 
         [Export(nameof(SyntaxTreeText))]
         public string SyntaxTreeText
@@ -66,6 +110,18 @@ namespace Visualizer.Mac
                 WillChangeValue(nameof(SemanticsText));
                 _semanticsText = value;
                 DidChangeValue(nameof(SemanticsText));
+            }
+        }
+
+        [Export(nameof(CaretText))]
+        public string CaretText
+        {
+            get => caretText;
+            set
+            {
+                WillChangeValue(nameof(CaretText));
+                caretText = value;
+                DidChangeValue(nameof(CaretText));
             }
         }
 
@@ -124,18 +180,20 @@ namespace Visualizer.Mac
             SemanticsBox.Font = font;
             InputBox.TextDidChange += Parse;
             InputBox.DidChangeSelection += UpdateMeta;
+            UpdateMeta(this, EventArgs.Empty);
             // Do any additional setup after loading the view.
         }
 
         private void UpdateMeta(object sender, EventArgs e)
         {
-            var range = InputBox.SelectedRange;
-            if (Model == null || Model.SyntaxTree.Length < range.Location)
+            var caret = InputBox.GetCaretPosition();
+            InvokeOnMainThread(() => CaretText = $"Index: {caret.Location} ({caret.Row}, {caret.Column})");
+            if (Model == null)
             {
                 return;
             }
-
-            var meta = Model.GetMetaAt((int)range.Location);
+            
+            var meta = Model.GetMetaAt(caret.Location);
             var syntax = SyntaxMapper.Map(meta.SyntaxNodeOrToken).ToJson(true, true);
             var semantics = meta.Semantics?.ToJson(true, true);
             InvokeOnMainThread(() =>
@@ -180,17 +238,17 @@ namespace Visualizer.Mac
             ParseAt = DateTimeOffset.UtcNow.AddMilliseconds(100);
         }
 
-        public override NSObject RepresentedObject
-        {
-            get
-            {
-                return base.RepresentedObject;
-            }
-            set
-            {
-                base.RepresentedObject = value;
-                // Update the view, if already loaded.
-            }
-        }
+        //public override NSObject RepresentedObject
+        //{
+        //    get
+        //    {
+        //        return base.RepresentedObject;
+        //    }
+        //    set
+        //    {
+        //        base.RepresentedObject = value;
+        //        // Update the view, if already loaded.
+        //    }
+        //}
     }
 }

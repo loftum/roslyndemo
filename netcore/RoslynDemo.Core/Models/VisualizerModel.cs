@@ -26,7 +26,7 @@ namespace RoslynDemo.Core.Models
 
         public SyntaxMeta GetMetaAt(int index)
         {
-            if (!SyntaxTree.TryGetRoot(out var root))
+            if (!SyntaxTree.TryGetRoot(out var root) || index < 0 || index >= SyntaxTree.Length)
             {
                 return SyntaxMeta.Empty;
             }
