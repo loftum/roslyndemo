@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "20. Libs", "20. Libs", "{85
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Visualizer.Mac", "Visualizer.Mac\Visualizer.Mac.csproj", "{AB12D915-ABB3-45C5-B631-D88368A87B90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Studio.Mac", "Visualizer.Mac\Studio.Mac\Studio.Mac.csproj", "{1934E3C3-79F2-4F69-B9D8-F843BCF03711}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Studio.Mac", "Studio.Mac\Studio.Mac.csproj", "{1934E3C3-79F2-4F69-B9D8-F843BCF03711}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
