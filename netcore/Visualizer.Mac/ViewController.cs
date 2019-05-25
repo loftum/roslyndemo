@@ -8,62 +8,22 @@ using Foundation;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using RoslynDemo.Core;
+using RoslynDemo.Core.IO;
 using RoslynDemo.Core.Models;
 using RoslynDemo.Core.Models.Syntax;
 using RoslynDemo.Core.Serializers;
 
 namespace Visualizer.Mac
 {
-    public static class TextViewExtensions
-    {
-        public static CaretPosition GetCaretPosition(this NSTextView view)
-        {
-            var range = view.GetSelectedRange();
-            var text = view.Value;
-            var location = (int)range.Location;
-            var row = 1;
-            var column = 1;
-            for(var ii=0; ii<location; ii++)
-            {
-                switch (text[ii])
-                {
-                    case '\n':
-                        row++;
-                        column = 1;
-                        break;
-                    case '\r':
-                        break;
-                    default:
-                        column++;
-                        break;
-                }
-            }
-            return new CaretPosition(location, row, column);
-        }
-    }
-
-    public struct CaretPosition
-    {
-        public int Location { get; }
-        public int Row { get; }
-        public int Column { get; }
-
-        public CaretPosition(int location, int row, int column)
-        {
-            Location = location;
-            Row = row;
-            Column = column;
-        }
-    }
-
-
     public partial class ViewController : NSViewController
     {
+        private readonly FileManager _fileManager = new FileManager("out");
         private string _syntaxTreeText;
         private string _compilationText;
         private string _syntaxText;
         private string _semanticsText;
         private string caretText;
+        private string _emitText;
 
         [Export(nameof(SyntaxTreeText))]
         public string SyntaxTreeText
@@ -110,6 +70,18 @@ namespace Visualizer.Mac
                 WillChangeValue(nameof(SemanticsText));
                 _semanticsText = value;
                 DidChangeValue(nameof(SemanticsText));
+            }
+        }
+
+        [Export(nameof(EmitText))]
+        public string EmitText
+        {
+            get => _emitText;
+            set
+            {
+                WillChangeValue(nameof(EmitText));
+                _emitText = value;
+                DidChangeValue(nameof(EmitText));
             }
         }
 
@@ -178,6 +150,10 @@ namespace Visualizer.Mac
             EmitBox.Font = font;
             SyntaxBox.Font = font;
             SemanticsBox.Font = font;
+            SyntaxText = "";
+            SemanticsText = "";
+            SyntaxTreeText = "";
+            EmitText = "";
             InputBox.TextDidChange += Parse;
             InputBox.DidChangeSelection += UpdateMeta;
             UpdateMeta(this, EventArgs.Empty);
@@ -192,10 +168,10 @@ namespace Visualizer.Mac
             {
                 return;
             }
-            
+
             var meta = Model.GetMetaAt(caret.Location);
-            var syntax = SyntaxMapper.Map(meta.SyntaxNodeOrToken).ToJson(true, true);
-            var semantics = meta.Semantics?.ToJson(true, true);
+            var syntax = SyntaxMapper.Map(meta.SyntaxNodeOrToken).ToPrettyJson();
+            var semantics = meta.Semantics?.ToPrettyJson();
             InvokeOnMainThread(() =>
             {
                 SyntaxText = syntax;
@@ -221,8 +197,8 @@ namespace Visualizer.Mac
                 var input = InputText;
                 Console.WriteLine($"Parsing {input}");
                 Model = VisualizerModel.Parse(input);
-                var tree = SyntaxMapper.Map(Model.SyntaxTree).ToJson(true, true);
-                var compilation = CompilationMapper.Map(Model.Compilation).ToJson(true, true);
+                var tree = SyntaxMapper.Map(Model.SyntaxTree).ToPrettyJson();
+                var compilation = CompilationMapper.Map(Model.Compilation).ToPrettyJson();
                 InvokeOnMainThread(() =>
                 {
                     SyntaxTreeText = tree;
@@ -238,9 +214,18 @@ namespace Visualizer.Mac
             ParseAt = DateTimeOffset.UtcNow.AddMilliseconds(100);
         }
 
-        public void Emit()
+        partial void Emit(NSObject sender)
         {
-
+            if (Model == null)
+            {
+                InvokeOnMainThread(() => EmitText = "Successfully emitted nothing into the void of zilch. It is dangerous to walk in the nil. Take this ASCII sword:\n\n ()///}============>\n\n(You haven't written any code yet.)");
+                return;
+            }
+            _fileManager.CleanFolder();
+            var result = Model.Compilation.Emit(_fileManager.ToFullPath("program.dll"), _fileManager.ToFullPath("program.pdb"));
+            _fileManager.SaveJson(RuntimeConfig.Generate(), "program.runtimeconfig.json");
+            var emitText = CompilationMapper.Map(result).ToPrettyJson();
+            InvokeOnMainThread(() => EmitText = emitText);
         }
 
         //public override NSObject RepresentedObject

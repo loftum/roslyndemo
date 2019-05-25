@@ -964,6 +964,13 @@
                                                                                 <size key="minSize" width="280" height="285"/>
                                                                                 <size key="maxSize" width="280" height="10000000"/>
                                                                                 <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                                                <connections>
+                                                                                    <binding destination="XfG-lQ-9wD" name="value" keyPath="self.EmitText" id="Kj2-DJ-OMt">
+                                                                                        <dictionary key="options">
+                                                                                            <bool key="NSContinuouslyUpdatesValue" value="YES"/>
+                                                                                        </dictionary>
+                                                                                    </binding>
+                                                                                </connections>
                                                                             </textView>
                                                                         </subviews>
                                                                     </clipView>
