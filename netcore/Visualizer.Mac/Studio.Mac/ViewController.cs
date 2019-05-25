@@ -4,7 +4,7 @@ using AppKit;
 using Foundation;
 
 namespace Studio.Mac
-{
+{
     public partial class ViewController : NSViewController
     {
         public ViewController(IntPtr handle) : base(handle)
@@ -15,7 +15,10 @@ namespace Studio.Mac
         {
             base.ViewDidLoad();
 
-            
+            var font = NSFont.FromFontName("Monaco", 12);
+            InputBox.Font = font;
+            InputBox.AutomaticSpellingCorrectionEnabled = false;
+            InputBox.AutomaticQuoteSubstitutionEnabled = false;
         }
 
         public override NSObject RepresentedObject
