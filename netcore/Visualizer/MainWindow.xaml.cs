@@ -106,10 +106,6 @@ namespace Visualizer
             {
                 Save();
             }
-            else if (e.Key == Key.B && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
-            {
-                Build();
-            }
         }
 
         private void Save()
@@ -132,14 +128,16 @@ namespace Visualizer
             Compilation.Text = Vm.GetCompilationModel().ToJson(true, true);
         }
 
-        private void Build_Click(object sender, RoutedEventArgs e)
+        private void Emit_Click(object sender, RoutedEventArgs e)
         {
-            Build();
-        }
-
-        private void Build()
-        {
-            EmitResult.Text = Vm.Emit().ToJson(true, true);
+            if (string.IsNullOrWhiteSpace(Input.Text))
+            {
+                EmitResult.Text =  "Successfully emitted nothing into the void of zilch. It is dangerous to walk in the nil.\r\n\r\nTake this ASCII sword:\r\n\r\n()///}=============>\r\n\r\n(You haven't written any code yet.)";
+            }
+            else
+            {
+                EmitResult.Text = Vm.Emit().ToJson(true, true);
+            }
         }
     }
 }

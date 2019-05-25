@@ -22,7 +22,6 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <avalonedit:TextEditor Name="Input" Grid.Row="0"
                                    TextChanged="Input_OnTextChanged"
@@ -40,11 +39,6 @@
                     <TextBox Name="Meta" IsReadOnly="True" FontFamily="Consolas"/>
                 </WrapPanel>
 
-            </Grid>
-            <Grid Grid.Row="2">
-                <WrapPanel>
-                    <Button Click="Build_Click">Build</Button>
-                </WrapPanel>
             </Grid>
         </Grid>
         <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Center" VerticalAlignment="Stretch" />
@@ -91,12 +85,23 @@
                                            HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
                 </TabItem>
                 <TabItem Header="Emit">
-                    <avalonedit:TextEditor Name="EmitResult" BorderThickness="0"
-                                           ShowLineNumbers="True"
-                                           IsReadOnly="True"
-                                           SyntaxHighlighting="JavaScript"
-                                           FontFamily="Consolas"
-                                           HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <WrapPanel Grid.Row="0">
+                            <Button Click="Emit_Click">Emit</Button>
+                        </WrapPanel>
+                        <avalonedit:TextEditor Grid.Row="1" Name="EmitResult" BorderThickness="0"
+                                               ShowLineNumbers="True"
+                                               IsReadOnly="True"
+                                               SyntaxHighlighting="JavaScript"
+                                               FontFamily="Consolas"
+                                               HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+                    </Grid>
+                    
+                    
                 </TabItem>
             </TabControl>
         </Grid>
