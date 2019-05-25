@@ -6,6 +6,8 @@ namespace RoslynDemo.Core.Serializers
 {
     public static class Json
     {
+        public static string ToPrettyJson(this object item) => item.ToJson(true, true);
+
         public static string ToJson(this object item, bool indented = false, bool suppressErrors = false)
         {
             if (item == null)

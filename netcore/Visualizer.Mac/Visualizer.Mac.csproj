@@ -119,6 +119,8 @@
       <DependentUpon>Window.cs</DependentUpon>
     </Compile>
     <Compile Include="Locked.cs" />
+    <Compile Include="TextViewExtensions.cs" />
+    <Compile Include="CaretPosition.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />
