@@ -145,6 +145,8 @@ namespace Visualizer.Mac
             _parser.Start();
             var font = NSFont.FromFontName("Monaco", 12);
             InputBox.Font = font;
+            InputBox.AutomaticSpellingCorrectionEnabled = false;
+            InputBox.AutomaticQuoteSubstitutionEnabled = false;
             SyntaxTreeBox.Font = font;
             CompilationBox.Font = font;
             EmitBox.Font = font;
@@ -222,10 +224,12 @@ namespace Visualizer.Mac
                 return;
             }
             _fileManager.CleanFolder();
-            var result = Model.Compilation.Emit(_fileManager.ToFullPath("program.dll"), _fileManager.ToFullPath("program.pdb"));
+            var programPath = _fileManager.ToFullPath("program.dll");
+            Console.WriteLine($"Writing {programPath}");
+            var result = Model.Compilation.Emit(programPath);
             _fileManager.SaveJson(RuntimeConfig.Generate(), "program.runtimeconfig.json");
             var emitText = CompilationMapper.Map(result).ToPrettyJson();
-            InvokeOnMainThread(() => EmitText = emitText);
+            InvokeOnMainThread(() => EmitText = $"{emitText}\n\nEmitted to {programPath}");
         }
 
         //public override NSObject RepresentedObject
