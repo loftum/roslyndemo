@@ -1,4 +1,4 @@
-﻿<wpf1:MainWindowBase x:Class="Visualizer.MainWindow"
+﻿<wpf:MainWindowBase x:Class="Visualizer.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,8 +6,7 @@
         xmlns:local="clr-namespace:Visualizer"
         xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
         xmlns:viewModels="clr-namespace:Visualizer.ViewModels"
-        
-        xmlns:wpf1="clr-namespace:Visualizer.Wpf"
+        xmlns:wpf="clr-namespace:Visualizer.Wpf"
         mc:Ignorable="d"
         Title="Visualizer" Height="350" Width="525">
     <Window.DataContext>
@@ -102,6 +101,6 @@
             </TabControl>
         </Grid>
     </Grid>
-</wpf1:MainWindowBase>
+</wpf:MainWindowBase>
 
 

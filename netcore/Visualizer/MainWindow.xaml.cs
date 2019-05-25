@@ -2,11 +2,11 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
-using Convenient.Stuff;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Search;
 using ICSharpCode.AvalonEdit;
 using Microsoft.CodeAnalysis.CSharp;
+using RoslynDemo.Core;
 using RoslynDemo.Core.Collections;
 using RoslynDemo.Core.IO;
 using RoslynDemo.Core.Models.Syntax;

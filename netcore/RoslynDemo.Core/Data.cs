@@ -1,4 +1,4 @@
-namespace Convenient.Stuff
+namespace RoslynDemo.Core
 {
     public class Data
     {
