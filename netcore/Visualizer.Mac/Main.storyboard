@@ -698,27 +698,6 @@
                                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                             <size key="minSize" width="241" height="316"/>
                                                             <size key="maxSize" width="252" height="10000000"/>
-                                                            <attributedString key="textStorage">
-                                                                <fragment>
-                                                                    <string key="content">using System;
-
-public class Hest
-{
-  public string Name { get; set; }
-
-  public static void Main(string[] args)
-  {
-    var hest = new Hest { Name = "Blakken" };
-    Console.WriteLine($"Hello, {hest.Name}");
-  }
-}</string>
-                                                                    <attributes>
-                                                                        <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                                        <font key="NSFont" metaFont="user"/>
-                                                                        <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
-                                                                    </attributes>
-                                                                </fragment>
-                                                            </attributedString>
                                                             <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                         </textView>
                                                     </subviews>
@@ -756,7 +735,7 @@ public class Hest
                                                 <font key="font" metaFont="system"/>
                                                 <tabViewItems>
                                                     <tabViewItem label="Meta" identifier="" id="28M-IS-6DZ">
-                                                        <view key="view" id="x2V-Ec-M3v">
+                                                        <view key="view" ambiguous="YES" id="x2V-Ec-M3v">
                                                             <rect key="frame" x="10" y="33" width="274" height="311"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
@@ -891,7 +870,7 @@ public class Hest
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <clipView key="contentView" ambiguous="YES" drawsBackground="NO" copiesOnScroll="NO" id="dGt-QF-5ob">
                                                                         <rect key="frame" x="0.0" y="0.0" width="280" height="311"/>
-                                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                                        <autoresizingMask key="autoresizingMask"/>
                                                                         <subviews>
                                                                             <textView ambiguous="YES" editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" spellingCorrection="YES" smartInsertDelete="YES" id="8Rr-Tv-XTb">
                                                                                 <rect key="frame" x="0.0" y="0.0" width="280" height="311"/>
@@ -933,7 +912,7 @@ public class Hest
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <clipView key="contentView" ambiguous="YES" drawsBackground="NO" copiesOnScroll="NO" id="oAa-xu-WBq">
                                                                         <rect key="frame" x="0.0" y="0.0" width="280" height="311"/>
-                                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                                        <autoresizingMask key="autoresizingMask"/>
                                                                         <subviews>
                                                                             <textView ambiguous="YES" editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" spellingCorrection="YES" smartInsertDelete="YES" id="PVP-3O-U9I">
                                                                                 <rect key="frame" x="0.0" y="0.0" width="280" height="311"/>
@@ -966,7 +945,7 @@ public class Hest
                                                         </view>
                                                     </tabViewItem>
                                                     <tabViewItem label="Emit" identifier="" id="bI8-iE-ZjM">
-                                                        <view key="view" ambiguous="YES" id="1VT-2Y-cbw">
+                                                        <view key="view" id="1VT-2Y-cbw">
                                                             <rect key="frame" x="10" y="33" width="274" height="311"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
@@ -975,7 +954,7 @@ public class Hest
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <clipView key="contentView" ambiguous="YES" drawsBackground="NO" copiesOnScroll="NO" id="Lmc-5X-coq">
                                                                         <rect key="frame" x="0.0" y="0.0" width="280" height="285"/>
-                                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                                        <autoresizingMask key="autoresizingMask"/>
                                                                         <subviews>
                                                                             <textView ambiguous="YES" importsGraphics="NO" richText="NO" verticallyResizable="YES" spellingCorrection="YES" smartInsertDelete="YES" id="nVu-5y-erg">
                                                                                 <rect key="frame" x="0.0" y="0.0" width="280" height="285"/>

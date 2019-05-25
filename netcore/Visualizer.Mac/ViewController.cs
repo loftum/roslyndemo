@@ -136,7 +136,7 @@ namespace Visualizer.Mac
 
         public ViewController(IntPtr handle) : base(handle)
         {
-            _parser = new Task(DoParse);
+            _parser = new Task(ParseInLoop);
         }
 
         public override void ViewDidLoad()
@@ -156,8 +156,9 @@ namespace Visualizer.Mac
             SemanticsText = "";
             SyntaxTreeText = "";
             EmitText = "";
-            InputBox.TextDidChange += Parse;
+            InputBox.TextDidChange += ScheduleParse;
             InputBox.DidChangeSelection += UpdateMeta;
+            DoParse();
             UpdateMeta(this, EventArgs.Empty);
             // Do any additional setup after loading the view.
         }
@@ -181,7 +182,7 @@ namespace Visualizer.Mac
             });
         }
 
-        private void DoParse()
+        private void ParseInLoop()
         {
             while (true)
             {
@@ -195,21 +196,25 @@ namespace Visualizer.Mac
                 {
                     Thread.Sleep(100);
                 }
-
-                var input = InputText;
-                Console.WriteLine($"Parsing {input}");
-                Model = VisualizerModel.Parse(input);
-                var tree = SyntaxMapper.Map(Model.SyntaxTree).ToPrettyJson();
-                var compilation = CompilationMapper.Map(Model.Compilation).ToPrettyJson();
-                InvokeOnMainThread(() =>
-                {
-                    SyntaxTreeText = tree;
-                    CompilationText = compilation;
-                });
+                DoParse();
             }
         }
 
-        private void Parse(object sender, EventArgs e)
+        private void DoParse()
+        {
+            var input = InputText ?? "";
+            Console.WriteLine($"Parsing {input}");
+            Model = VisualizerModel.Parse(input);
+            var tree = SyntaxMapper.Map(Model.SyntaxTree).ToPrettyJson();
+            var compilation = CompilationMapper.Map(Model.Compilation).ToPrettyJson();
+            InvokeOnMainThread(() =>
+            {
+                SyntaxTreeText = tree;
+                CompilationText = compilation;
+            });
+        }
+
+        private void ScheduleParse(object sender, EventArgs e)
         {
             InputText = InputBox.Value;
             ShouldParse = true;
@@ -218,7 +223,7 @@ namespace Visualizer.Mac
 
         partial void Emit(NSObject sender)
         {
-            if (Model == null)
+            if (string.IsNullOrWhiteSpace(InputText) || Model == null)
             {
                 InvokeOnMainThread(() => EmitText = "Successfully emitted nothing into the void of zilch. It is dangerous to walk in the nil. Take this ASCII sword:\n\n ()///}============>\n\n(You haven't written any code yet.)");
                 return;
