@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "20. Libs", "20. Libs", "{85
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Visualizer.Mac", "Visualizer.Mac\Visualizer.Mac.csproj", "{AB12D915-ABB3-45C5-B631-D88368A87B90}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Studio.Mac", "Visualizer.Mac\Studio.Mac\Studio.Mac.csproj", "{1934E3C3-79F2-4F69-B9D8-F843BCF03711}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{AB12D915-ABB3-45C5-B631-D88368A87B90}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB12D915-ABB3-45C5-B631-D88368A87B90}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB12D915-ABB3-45C5-B631-D88368A87B90}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1934E3C3-79F2-4F69-B9D8-F843BCF03711}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1934E3C3-79F2-4F69-B9D8-F843BCF03711}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1934E3C3-79F2-4F69-B9D8-F843BCF03711}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1934E3C3-79F2-4F69-B9D8-F843BCF03711}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +38,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{E4C7CCB1-25ED-4EC0-A2F5-2E87EE3429A1} = {854583A7-5439-43E9-ABA7-B62BDF775A75}
 		{AB12D915-ABB3-45C5-B631-D88368A87B90} = {832B5365-D02C-4F03-BA81-3E562DB8B078}
+		{1934E3C3-79F2-4F69-B9D8-F843BCF03711} = {832B5365-D02C-4F03-BA81-3E562DB8B078}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E5C8BA28-37DA-41C7-852F-155B2EAF7EA7}
