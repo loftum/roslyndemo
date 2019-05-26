@@ -6,51 +6,8 @@ using RoslynDemo.Core.Models.Semantics;
 using RoslynDemo.Core.Models.Syntax;
 using RoslynDemo.Core.Syntax;
 
-namespace Visualizer.Completion
+namespace RoslynDemo.Core.Completion
 {
-    public static class CodeCompletionExtensions
-    {
-        public static CompletionSymbols GetCompletionSymbols(this SemanticModel semantics, SyntaxNode node)
-        {
-            if (node == null)
-            {
-                return semantics.GetDefault();
-            }
-            var symbolInfo = semantics.GetSymbolInfo(node);
-
-            var symbol = symbolInfo.Symbol;
-            var namespaceOrType = symbol as INamespaceOrTypeSymbol;
-            if (namespaceOrType != null)
-            {
-                return new CompletionSymbols(namespaceOrType, null);
-            }
-
-            var typeInfo = semantics.GetTypeInfo(node);
-            var type = typeInfo.ConvertedType ?? typeInfo.Type;
-
-            return type != null ? new CompletionSymbols(type, symbol) : semantics.GetDefault();
-        }
-
-        private static CompletionSymbols GetDefault(this SemanticModel semantics)
-        {
-            return new CompletionSymbols(semantics.Compilation.GlobalNamespace, null);
-        }
-    }
-
-    public struct CompletionSymbols
-    {
-        public INamespaceOrTypeSymbol NamespaceOrType { get; }
-        public ISymbol Symbol { get; }
-
-        public bool SearchForStatic => Symbol == null;
-
-        public CompletionSymbols(INamespaceOrTypeSymbol namespaceOrType, ISymbol symbol)
-        {
-            NamespaceOrType = namespaceOrType;
-            Symbol = symbol;
-        }
-    }
-
     public class CodeCompleter
     {
         private readonly IList<ISymbol> _symbols;
@@ -87,10 +44,10 @@ namespace Visualizer.Completion
             CompletionCandidates = symbols.Select(s => new SymbolModel(s)).ToList();
         }
 
-        public IEnumerable<CompletionData> GetCompletions()
+        public IEnumerable<CompletionItem> GetCompletions()
         {
-            return _symbols.Where(s => s.Name.StartsWith(_prefix))
-                .Select(s => new CompletionData(_prefix,
+            return Enumerable.Where<ISymbol>(_symbols, s => s.Name.StartsWith(_prefix))
+                .Select(s => new CompletionItem(_prefix,
                 s.ToDisplayString(DisplayFormats.CompletionFormat).Substring(_prefix.Length),
                 s.ToDisplayString(DisplayFormats.ContentFormat),
                 s.ToDisplayString(DisplayFormats.DescriptionFormat))
@@ -122,18 +79,6 @@ namespace Visualizer.Completion
             
             var previous = dot.GetPreviousSibling();
             return previous.IsNode ? new CompletionNodes(previous.AsNode(), prefix) : new CompletionNodes(null, prefix);
-        }
-    }
-
-    public struct CompletionNodes
-    {
-        public SyntaxNode Container { get; }
-        public SyntaxNode Prefix { get; }
-
-        public CompletionNodes(SyntaxNode container, SyntaxNode prefix)
-        {
-            Container = container;
-            Prefix = prefix;
         }
     }
 }

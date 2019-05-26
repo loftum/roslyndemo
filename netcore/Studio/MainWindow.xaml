@@ -26,14 +26,22 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <avalonedit:TextEditor Name="Input" Grid.Column="0"
-                                           ShowLineNumbers="True"
-                                           FontFamily="Consolas"
-                                           SyntaxHighlighting="C#"
-                                           KeyUp="Input_KeyUp"
-                                           KeyDown="Input_KeyDown"
-                                           HorizontalScrollBarVisibility="Auto"
-                                           VerticalScrollBarVisibility="Auto"/>
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" FontFamily="Consolas">Input</TextBlock>
+                        <avalonedit:TextEditor Name="Input" Grid.Row="1"
+                                               ShowLineNumbers="True"
+                                               FontFamily="Consolas"
+                                               SyntaxHighlighting="C#"
+                                               KeyUp="Input_KeyUp"
+                                               KeyDown="Input_KeyDown"
+                                               HorizontalScrollBarVisibility="Auto"
+                                               VerticalScrollBarVisibility="Auto"/>
+                    </Grid>
+                    
                     <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Center" Width="5"/>
                     <TabControl Grid.Column="2" BorderThickness="0">
                         <TabItem Header="Code">
