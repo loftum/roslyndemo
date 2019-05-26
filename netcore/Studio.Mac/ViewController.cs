@@ -58,7 +58,8 @@ namespace Studio.Mac
         {
             var code = InputBox.GetSelectedText();
             var result = await _scripter.EvaluateAsync(code);
-            
+            var resultText = result.ToResultString();
+            BeginInvokeOnMainThread(() => OutputText = resultText);
         }
 
         public override NSObject RepresentedObject

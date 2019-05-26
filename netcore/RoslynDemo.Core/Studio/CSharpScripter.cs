@@ -6,7 +6,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using RoslynDemo.Core.Completion;
-using RoslynDemo.Core.Serializers;
 
 namespace RoslynDemo.Core.Studio
 {
