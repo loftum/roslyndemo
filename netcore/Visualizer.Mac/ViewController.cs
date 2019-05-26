@@ -159,6 +159,8 @@ namespace Visualizer.Mac
             //InputBox.TextDidEndEditing += ScheduleParse;
             InputBox.TextDidChange += ScheduleParse;
             InputBox.DidChangeSelection += UpdateMeta;
+            InvokeOnMainThread(() => InputBox.Value = InitialTexts.HelloWorld);
+            InputText = InputBox.Value;
             DoParse();
             UpdateMeta(this, EventArgs.Empty);
         }
