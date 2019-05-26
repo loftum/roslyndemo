@@ -1,14 +1,18 @@
 ﻿using System;
-
+using System.Threading.Tasks;
 using AppKit;
 using Foundation;
+using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
+using RoslynDemo.Core;
 
 namespace Studio.Mac
 {
     public partial class ViewController : NSViewController
     {
         private ScriptState _scriptState;
+
+        
 
         public ViewController(IntPtr handle) : base(handle)
         {
@@ -23,6 +27,13 @@ namespace Studio.Mac
             InputBox.AutomaticSpellingCorrectionEnabled = false;
             InputBox.AutomaticQuoteSubstitutionEnabled = false;
             NSEvent.AddLocalMonitorForEventsMatchingMask(NSEventMask.KeyDown, HandleKeyDown);
+        }
+
+        private async Task Reset()
+        {
+            var options = ScriptOptions.Default.WithReferences(Assemblies.FromCurrentContext())
+                .WithImports(Assemblies.RoslynNamespaces);
+            //_scriptState = await CSharpScript.RunAsync("", options, new Interacti)
         }
 
         private NSEvent HandleKeyDown(NSEvent theEvent)
