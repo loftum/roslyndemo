@@ -1,6 +1,6 @@
 using Microsoft.CodeAnalysis;
 
-namespace Visualizer.Completion
+namespace RoslynDemo.Core.Completion
 {
     public static class DisplayFormats
     {

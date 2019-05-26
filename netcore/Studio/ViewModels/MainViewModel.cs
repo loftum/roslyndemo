@@ -1,24 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Scripting;
-using Microsoft.CodeAnalysis.Scripting;
-using RoslynDemo.Core;
 using RoslynDemo.Core.Collections;
-using RoslynDemo.Core.Serializers;
+using RoslynDemo.Core.Completion;
 using RoslynDemo.Core.Studio;
-using Studio.Completion;
-using Studio.Extensions;
+using Studio.Avalon;
 using Studio.Wpf;
 
 namespace Studio.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        private ScriptState _scriptState;
+        private readonly CSharpScripter _scripter = new CSharpScripter();
+
         private string _code;
 
         public string Code
@@ -29,56 +24,24 @@ namespace Studio.ViewModels
 
         public ObservableCollection<VariableModel> Variables { get; } = new ObservableCollection<VariableModel>();
 
-        public MainViewModel()
-        {
-            Reset().Wait();
-        }
-
-        public async Task Reset()
-        {
-            var options = ScriptOptions.Default.WithReferences(AppDomain.CurrentDomain.GetAssemblies())
-                .WithImports(Assemblies.RoslynNamespaces);
-            _scriptState = await CSharpScript.RunAsync("", options, new Interactive(),
-                typeof(Interactive));
-            Variables.Clear();
-        }
-
-        protected CSharpCompilation Compilation => (CSharpCompilation)_scriptState.Script.GetCompilation();
-        protected CSharpSyntaxTree SyntaxTree => (CSharpSyntaxTree)Compilation.SyntaxTrees.Single();
-
         public IEnumerable<CompletionData> GetCompletions(string code)
         {
-            var script = _scriptState.Script.ContinueWith(code);
-            script.Compile();
-            var compilation = script.GetCompilation();
-            var tree = compilation.SyntaxTrees.Single();
-            var completer = new CodeCompleter(tree, compilation, tree.Length - 1);
-            Code = completer.ToJson(true, true);
-            return completer.GetCompletions();
+            return _scripter.GetCompletions(code).Select(ToCompletionData);
+        }
+
+        private static CompletionData ToCompletionData(CompletionItem item)
+        {
+            return new CompletionData(item.Prefix, item.Completion, item.Content, item.Description);
         }
 
         public async Task<object> Evaluate(string code)
         {
-            try
-            {
-                _scriptState = await _scriptState.ContinueWithAsync(code);
-                Variables.Clear();
-                Variables.AddRange(_scriptState.Variables.Select(v => new VariableModel(v)));
-                return _scriptState.ReturnValue ?? _scriptState.Exception;
-            }
-            catch (CompilationErrorException e)
-            {
-                return e;
-            }
-            catch (Exception e)
-            {
-                return e;
-            }
-            finally
-            {
-                var source = await SyntaxTree.GetTextAsync();
-                Code = source.ToString();
-            }
+            var ret = await _scripter.Evaluate(code);
+            Variables.Clear();
+            Variables.AddRange(_scripter.ScriptState.Variables.Select(v => new VariableModel(v)));
+            var source = await _scripter.SyntaxTree.GetTextAsync();
+            Code = source.ToString();
+            return ret;
         }
     }
 }

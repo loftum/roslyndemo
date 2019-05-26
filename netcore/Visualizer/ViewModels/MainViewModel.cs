@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.CodeAnalysis.CSharp;
 using RoslynDemo.Core;
+using RoslynDemo.Core.Completion;
 using RoslynDemo.Core.IO;
 using RoslynDemo.Core.Models;
 using RoslynDemo.Core.Models.Emit;
 using RoslynDemo.Core.Models.Syntax;
-using Visualizer.Completion;
+using Visualizer.Avalon;
 using Visualizer.Wpf;
 
 namespace Visualizer.ViewModels
@@ -44,7 +46,12 @@ namespace Visualizer.ViewModels
         public IEnumerable<CompletionData> GetCompletions(int location)
         {
             var completer = new CodeCompleter(_model.SyntaxTree, _model.Compilation, location);
-            return completer.GetCompletions();
+            return completer.GetCompletions().Select(ToCompletionData);
+        }
+
+        private CompletionData ToCompletionData(CompletionItem item)
+        {
+            return new CompletionData(item.Prefix, item.Completion, item.Content, item.Description);
         }
     }
 }
