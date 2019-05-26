@@ -29,7 +29,7 @@ namespace RoslynDemo.Core.Studio
                 typeof(Interactive));
         }
 
-        public async Task<object> Evaluate(string code)
+        public async Task<object> EvaluateAsync(string code)
         {
             try
             {

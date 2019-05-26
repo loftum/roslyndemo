@@ -36,7 +36,7 @@ namespace Studio.ViewModels
 
         public async Task<object> Evaluate(string code)
         {
-            var ret = await _scripter.Evaluate(code);
+            var ret = await _scripter.EvaluateAsync(code);
             Variables.Clear();
             Variables.AddRange(_scripter.ScriptState.Variables.Select(v => new VariableModel(v)));
             var source = await _scripter.SyntaxTree.GetTextAsync();
