@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.Scripting;
 using RoslynDemo.Core;
 using RoslynDemo.Core.Collections;
 using RoslynDemo.Core.Serializers;
+using RoslynDemo.Core.Studio;
 using Studio.Completion;
 using Studio.Extensions;
 using Studio.Wpf;
