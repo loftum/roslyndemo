@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Foundation;
 using AppKit;
 
@@ -26,13 +24,7 @@ namespace Studio.Mac
         {
             AutomaticTextReplacementEnabled = false;
             AutomaticQuoteSubstitutionEnabled = false;
-
-        }
-
-        public override void KeyDown(NSEvent theEvent)
-        {
-            base.KeyDown(theEvent);
-            Console.WriteLine($"KeyDown: {theEvent.KeyCode}");
+            Font = NSFont.FromFontName("Monaco", 12);
         }
     }
 }

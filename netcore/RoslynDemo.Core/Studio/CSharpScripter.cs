@@ -22,7 +22,7 @@ namespace RoslynDemo.Core.Studio
 
         public async Task Reset()
         {
-            var options = ScriptOptions.Default.WithReferences(AppDomain.CurrentDomain.GetAssemblies())
+            var options = ScriptOptions.Default.WithReferences(Assemblies.FromCurrentContext())
                 .WithImports(Assemblies.RoslynNamespaces);
             ScriptState = await CSharpScript.RunAsync("", options, new Interactive(),
                 typeof(Interactive));
