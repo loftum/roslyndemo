@@ -3,28 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using RoslynDemo.Core.Serializers;
 
-namespace Studio.Extensions
+namespace RoslynDemo.Core.Studio
 {
     public static class ResultExtensions
     {
         public static string ToResultString(this object o)
         {
-            if (o == null)
+            switch (o)
             {
-                return "null";
+                case null:
+                    return "null";
+                case string s:
+                    return s;
             }
-            var s = o as string;
-            if (s != null)
-            {
-                return s;
-            }
+
             if (o.GetType().IsValueType || o.GetType().IsEnum)
             {
                 return o.ToString();
             }
 
-            var ex = o as Exception;
-            if (ex != null)
+            if (o is Exception ex)
             {
                 var dictionary = new Dictionary<string, object>();
                 var type = ex.GetType();
@@ -32,9 +30,10 @@ namespace Studio.Extensions
                 {
                     dictionary[property.Name] = property.GetValue(ex);
                 }
-                return $"{ex.Message}{Environment.NewLine}{ex.StackTrace}{Environment.NewLine}{Environment.NewLine}{dictionary.ToJson(true, true)}";
+                return $"{ex.Message}{Environment.NewLine}{ex.StackTrace}{Environment.NewLine}{Environment.NewLine}{dictionary.ToPrettyJson()}";
             }
-            return o.ToJson(true, true);
+
+            return o.ToPrettyJson();
         }
     }
 }

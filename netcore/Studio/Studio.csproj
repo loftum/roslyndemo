@@ -14,4 +14,8 @@
     <ProjectReference Include="..\RoslynDemo.Core\RoslynDemo.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+  </ItemGroup>
+
 </Project>
