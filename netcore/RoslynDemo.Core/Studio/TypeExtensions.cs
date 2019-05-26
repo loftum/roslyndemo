@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Studio.Extensions
+namespace RoslynDemo.Core.Studio
 {
     public static class TypeExtensions
     {

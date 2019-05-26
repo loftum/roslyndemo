@@ -1,6 +1,6 @@
 using System;
 using Microsoft.CodeAnalysis.Scripting;
-using Studio.Extensions;
+using RoslynDemo.Core.Studio;
 
 namespace Studio.ViewModels
 {
