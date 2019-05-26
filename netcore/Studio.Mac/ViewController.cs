@@ -5,14 +5,13 @@ using Foundation;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using RoslynDemo.Core;
+using RoslynDemo.Core.Studio;
 
 namespace Studio.Mac
 {
     public partial class ViewController : NSViewController
     {
-        private ScriptState _scriptState;
-
-        
+        private CSharpScripter _scripter = new CSharpScripter();
 
         public ViewController(IntPtr handle) : base(handle)
         {
@@ -29,24 +28,20 @@ namespace Studio.Mac
             NSEvent.AddLocalMonitorForEventsMatchingMask(NSEventMask.KeyDown, HandleKeyDown);
         }
 
-        private async Task Reset()
-        {
-            var options = ScriptOptions.Default.WithReferences(Assemblies.FromCurrentContext())
-                .WithImports(Assemblies.RoslynNamespaces);
-            //_scriptState = await CSharpScript.RunAsync("", options, new Interacti)
-        }
-
         private NSEvent HandleKeyDown(NSEvent theEvent)
         {
             var key = (NSKey)theEvent.KeyCode;
             switch (key)
             {
                 case NSKey.F5:
+
                     return null;
                 default:
                     return theEvent;
             }
         }
+
+
 
         public override NSObject RepresentedObject
         {
