@@ -1,8 +1,7 @@
 using System;
 using Microsoft.CodeAnalysis.Scripting;
-using RoslynDemo.Core.Studio;
 
-namespace Studio.ViewModels
+namespace RoslynDemo.Core.Studio
 {
     public class VariableModel
     {
