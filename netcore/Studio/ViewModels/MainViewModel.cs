@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
+using RoslynDemo.Core;
 using RoslynDemo.Core.Collections;
 using RoslynDemo.Core.Serializers;
 using Studio.Completion;
@@ -32,17 +33,10 @@ namespace Studio.ViewModels
             Reset().Wait();
         }
 
-        private static readonly string[] RoslynAssemblies = {
-            "Microsoft.CodeAnalysis",
-            "Microsoft.CodeAnalysis.CSharp",
-            "Microsoft.CodeAnalysis.Scripting",
-            "Microsoft.CodeAnalysis.CSharp.Scripting"
-        };
-
         public async Task Reset()
         {
             var options = ScriptOptions.Default.WithReferences(AppDomain.CurrentDomain.GetAssemblies())
-                .WithImports(RoslynAssemblies);
+                .WithImports(Assemblies.RoslynNamespaces);
             _scriptState = await CSharpScript.RunAsync("", options, new Interactive(),
                 typeof(Interactive));
             Variables.Clear();

@@ -15,5 +15,12 @@ namespace RoslynDemo.Core
             .Select(Assembly.LoadFile);
 
         public static IEnumerable<Assembly> FromCurrentContext() => FromAppDomain().Concat(FromDisk());
+
+        public static readonly string[] RoslynNamespaces = {
+            "Microsoft.CodeAnalysis",
+            "Microsoft.CodeAnalysis.CSharp",
+            "Microsoft.CodeAnalysis.Scripting",
+            "Microsoft.CodeAnalysis.CSharp.Scripting"
+        };
     }
 }
