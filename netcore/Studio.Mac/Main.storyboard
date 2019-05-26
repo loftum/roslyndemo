@@ -699,7 +699,7 @@
                                                                     <rect key="frame" x="0.0" y="0.0" width="317" height="210"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
-                                                                        <textView ambiguous="YES" importsGraphics="NO" richText="NO" verticallyResizable="YES" textCompletion="NO" id="ijF-z1-eZc">
+                                                                        <textView ambiguous="YES" importsGraphics="NO" richText="NO" verticallyResizable="YES" textCompletion="NO" id="ijF-z1-eZc" customClass="EditorTextView">
                                                                             <rect key="frame" x="0.0" y="0.0" width="317" height="210"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>

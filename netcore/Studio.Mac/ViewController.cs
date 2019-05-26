@@ -2,11 +2,14 @@
 
 using AppKit;
 using Foundation;
+using Microsoft.CodeAnalysis.Scripting;
 
 namespace Studio.Mac
 {
     public partial class ViewController : NSViewController
     {
+        private ScriptState _scriptState;
+
         public ViewController(IntPtr handle) : base(handle)
         {
         }
@@ -19,6 +22,19 @@ namespace Studio.Mac
             InputBox.Font = font;
             InputBox.AutomaticSpellingCorrectionEnabled = false;
             InputBox.AutomaticQuoteSubstitutionEnabled = false;
+            NSEvent.AddLocalMonitorForEventsMatchingMask(NSEventMask.KeyDown, HandleKeyDown);
+        }
+
+        private NSEvent HandleKeyDown(NSEvent theEvent)
+        {
+            var key = (NSKey)theEvent.KeyCode;
+            switch (key)
+            {
+                case NSKey.F5:
+                    return null;
+                default:
+                    return theEvent;
+            }
         }
 
         public override NSObject RepresentedObject

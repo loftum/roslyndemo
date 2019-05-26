@@ -156,11 +156,11 @@ namespace Visualizer.Mac
             SemanticsText = "";
             SyntaxTreeText = "";
             EmitText = "";
+            //InputBox.TextDidEndEditing += ScheduleParse;
             InputBox.TextDidChange += ScheduleParse;
             InputBox.DidChangeSelection += UpdateMeta;
             DoParse();
             UpdateMeta(this, EventArgs.Empty);
-            // Do any additional setup after loading the view.
         }
 
         private void UpdateMeta(object sender, EventArgs e)
