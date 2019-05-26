@@ -124,6 +124,7 @@
     <Compile Include="EditorTextView.designer.cs">
       <DependentUpon>EditorTextView.cs</DependentUpon>
     </Compile>
+    <Compile Include="TextViewExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />

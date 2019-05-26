@@ -819,6 +819,13 @@
                                                                             <size key="minSize" width="317" height="220"/>
                                                                             <size key="maxSize" width="317" height="10000000"/>
                                                                             <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                                            <connections>
+                                                                                <binding destination="XfG-lQ-9wD" name="value" keyPath="self.OutputText" id="dOw-sX-R0H">
+                                                                                    <dictionary key="options">
+                                                                                        <bool key="NSContinuouslyUpdatesValue" value="YES"/>
+                                                                                    </dictionary>
+                                                                                </binding>
+                                                                            </connections>
                                                                         </textView>
                                                                     </subviews>
                                                                 </clipView>
@@ -901,7 +908,9 @@
                         </subviews>
                     </view>
                     <connections>
+                        <outlet property="ConsoleBox" destination="y71-Vw-pfN" id="Nn2-q4-Qfy"/>
                         <outlet property="InputBox" destination="ijF-z1-eZc" id="pHc-1g-YhK"/>
+                        <outlet property="OutputBox" destination="aPM-cZ-b1H" id="DkJ-Gy-6nE"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

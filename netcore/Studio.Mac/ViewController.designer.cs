@@ -13,13 +13,29 @@ namespace Studio.Mac
 	partial class ViewController
 	{
 		[Outlet]
+		AppKit.NSScrollView ConsoleBox { get; set; }
+
+		[Outlet]
 		AppKit.NSTextView InputBox { get; set; }
+
+		[Outlet]
+		AppKit.NSTextView OutputBox { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
 			if (InputBox != null) {
 				InputBox.Dispose ();
 				InputBox = null;
+			}
+
+			if (OutputBox != null) {
+				OutputBox.Dispose ();
+				OutputBox = null;
+			}
+
+			if (ConsoleBox != null) {
+				ConsoleBox.Dispose ();
+				ConsoleBox = null;
 			}
 		}
 	}

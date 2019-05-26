@@ -12,6 +12,19 @@ namespace Studio.Mac
     public partial class ViewController : NSViewController
     {
         private CSharpScripter _scripter = new CSharpScripter();
+        private string _outputText;
+
+        [Export(nameof(OutputText))]
+        public string OutputText
+        {
+            get => _outputText;
+            set
+            {
+                WillChangeValue(nameof(OutputText));
+                _outputText = value;
+                DidChangeValue(nameof(OutputText));
+            }
+        }
 
         public ViewController(IntPtr handle) : base(handle)
         {
@@ -34,14 +47,19 @@ namespace Studio.Mac
             switch (key)
             {
                 case NSKey.F5:
-
+                    EvaluateAsync().Wait();
                     return null;
                 default:
                     return theEvent;
             }
         }
 
-
+        private async Task EvaluateAsync()
+        {
+            var code = InputBox.GetSelectedText();
+            var result = await _scripter.EvaluateAsync(code);
+            
+        }
 
         public override NSObject RepresentedObject
         {
