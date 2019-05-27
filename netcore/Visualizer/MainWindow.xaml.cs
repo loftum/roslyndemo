@@ -48,7 +48,7 @@ namespace Visualizer
         protected override void OnInitialized(EventArgs e)
         {
             var data = _fileManager.LoadJson<Data>() ?? new Data();
-            Input.Text = data.Input;
+            Input.Text = string.IsNullOrWhiteSpace(data.Input) ? InitialTexts.HelloWorld : data.Input;
             base.OnInitialized(e);
         }
 
