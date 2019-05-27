@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using RoslynDemo.Core.Serializers;
@@ -15,9 +16,12 @@ namespace RoslynDemo.Core.Studio
                     return "null";
                 case string s:
                     return s;
+                case ICollection c:
+                    return c.ToPrettyJson();
             }
 
-            if (o.GetType().IsValueType || o.GetType().IsEnum)
+            var type = o.GetType();
+            if (type.IsValueType || type.IsEnum)
             {
                 return o.ToString();
             }
@@ -25,8 +29,8 @@ namespace RoslynDemo.Core.Studio
             if (o is Exception ex)
             {
                 var dictionary = new Dictionary<string, object>();
-                var type = ex.GetType();
-                foreach (var property in type.GetProperties().Where(p => p.DeclaringType == type))
+                var exceptionType = ex.GetType();
+                foreach (var property in exceptionType.GetProperties().Where(p => p.DeclaringType == exceptionType))
                 {
                     dictionary[property.Name] = property.GetValue(ex);
                 }

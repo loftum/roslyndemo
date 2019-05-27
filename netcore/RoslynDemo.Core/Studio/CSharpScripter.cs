@@ -23,7 +23,14 @@ namespace RoslynDemo.Core.Studio
         public async Task Reset()
         {
             var options = ScriptOptions.Default.WithReferences(Assemblies.FromAppDomain())
-                .WithImports(Assemblies.RoslynNamespaces);
+                .WithImports(Assemblies.RoslynNamespaces.Concat(new []
+                {
+                    "System",
+                    "System.Collections",
+                    "System.Collections.Generic",
+                    "System.Linq",
+                    "System.Threading.Tasks"
+                }));
             ScriptState = await CSharpScript.RunAsync("", options, new Interactive(),
                 typeof(Interactive));
         }
