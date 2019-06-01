@@ -47,25 +47,39 @@
                 <TabItem Header="Meta">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0">Syntax</TextBlock>
-                        <avalonedit:TextEditor Grid.Row="1" Name="Syntax" BorderThickness="0"
-                                               ShowLineNumbers="True"
-                                               IsReadOnly="True"
-                                               SyntaxHighlighting="JavaScript"
-                                               FontFamily="Consolas"
-                                               HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
-                        <TextBlock Grid.Row="2">Semantics</TextBlock>
-                        <avalonedit:TextEditor Grid.Row="3" Name="Semantics" BorderThickness="0"
-                                               ShowLineNumbers="True"
-                                               IsReadOnly="True"
-                                               SyntaxHighlighting="JavaScript"
-                                               FontFamily="Consolas"
-                                               HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+                        <Grid Grid.Row="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0">Syntax</TextBlock>
+                            <avalonedit:TextEditor Grid.Row="1" Name="Syntax" BorderThickness="0"
+                                                   ShowLineNumbers="True"
+                                                   IsReadOnly="True"
+                                                   SyntaxHighlighting="JavaScript"
+                                                   FontFamily="Consolas"
+                                                   HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+                        </Grid>
+                        <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Height="5"/>
+                        <Grid Grid.Row="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0">Semantics</TextBlock>
+                            <avalonedit:TextEditor Grid.Row="1" Name="Semantics" BorderThickness="0"
+                                                   ShowLineNumbers="True"
+                                                   IsReadOnly="True"
+                                                   SyntaxHighlighting="JavaScript"
+                                                   FontFamily="Consolas"
+                                                   HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+                        </Grid>
+                        
+                        
                     </Grid>
                 </TabItem>
                 <TabItem Header="SyntaxTree">
